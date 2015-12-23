@@ -2,11 +2,16 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
+var session = require('client-sessions');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+
+var config = require('./config')
 
 var routes = require('./routes/index');
-var users = require('./routes/user');
+var userRoutes = require('./routes/user');
+
+mongoose.connect(config.db);
 
 var app = express();
 
@@ -19,17 +24,41 @@ app.locals.ENV_DEVELOPMENT = env == 'development';
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// app.use(favicon(__dirname + '/public/img/favicon.ico'));
+app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(cookieParser());
+app.use(session({
+  cookieName: 'session',
+  secret: config.session.secret,
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Session Validation Middleware
+var User = require('./models/User.js');
+app.use(function(req, res, next) {
+  if (req.session && req.session.user) {
+    User.findOne({ email: req.session.user.email }, function(err, user) {
+      if (user) {
+        req.user = user;
+        delete req.user.password; // delete the password from the session
+        req.session.user = user;  //refresh the session value
+        res.locals.user = user;
+      }
+      // finishing processing the middleware and run the route
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
 app.use('/', routes);
-app.use('/users', users);
+app.use('/users', userRoutes);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -64,6 +93,5 @@ app.use(function(err, req, res, next) {
         title: 'error'
     });
 });
-
 
 module.exports = app;

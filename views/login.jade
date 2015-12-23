@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  div.container
+    div.center-form.panel
+      div.panel-body
+        h4.text-center: i.ion-log-in &nbsp;Log In
+        form.form-signin(action='/login', method='post')
+          div.form-group.has-feedback
+            input.form-control.input-lg(type='email', name='email', placeholder="Email", required=true, autofocus=true)
+            span.ion-at.form-control-feedback
+          div.form-group.has-feedback
+            input.form-control.input-lg(type='password', name='password', placeholder="Password", required=true)
+            span.ion-key.form-control-feedback
+          if isLoginDirty
+            div.alert.alert-danger.fade.in
+              a.close(href="#", data-dismiss="alert", aria-label="close") &times;
+              strong Error!
+              p Invalid Email or Password.
+          button.btn.btn-block.btn-success(type='submit') Log in
+          div.signup-or-separator
+            h6.text or
+            hr
+          p.text-center.text-muted
+            small Don't have an account yet?&nbsp;
+              a(href="/signup") Sign Up

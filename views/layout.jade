@@ -2,12 +2,37 @@ doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
-    meta(name='viewport', content='width=device-width')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
     title= title
     block css
+      link(rel='stylesheet', href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.6/paper/bootstrap.min.css")
+      link(rel='stylesheet', href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css")
       link(rel='stylesheet', href='/css/style.css')
     block js
+      script(src="//code.jquery.com/jquery-2.1.4.min.js")
+      script(src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
       if ENV_DEVELOPMENT
         script(src='http://localhost:35729/livereload.js')
   body
+    nav.navbar.navbar-default.navbar-static-top
+      div.container
+        ul.nav.navbar-nav
+          a.navbar-brand(href="/"): i.ion-android-checkmark-circle &nbsp;Proof Assistant
+          li: a(href="/about") About
+          if user
+            li: a(href="/dashboard") Dashboard
+            li: a(href="/logout") Logout
+          else
+            li: a(href="/") Log in
+            li: a(href="/signup") Sign up
+        ul.nav.navbar-nav.navbar-right
+          if user
+            li: a(href="/dashboard") #{user.email}&nbsp;&nbsp;
+              if user.picture
+                img.media-object.img-rounded(src=user.picture)
+              else
+                img.media-object.img-rounded(src='/img/default_userimage.png')
+
+
     block content
