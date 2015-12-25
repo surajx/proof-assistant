@@ -21,5 +21,5 @@
 
 * No pushing code to master branch.
 * Developers are to checkout a new git branch code in that branch and push the branch to the repository
-* Once you have completed a feature and unit-tested your code, create a pull-request in the GitLab repository and tag one of your peers for code-review. 
+* Once you have completed a feature and unit-tested your code, create a [merge-request](https://gitlab.cecs.anu.edu.au/surajx/proof-assistant/merge_requests) in the GitLab repository and tag one of your peers for code-review.
 * Once the code has been reviewed, the code is merged into master and deployed to the staging server( which is yet to be setup ).
