@@ -15,15 +15,34 @@ function isLoggedIn(req, res, next) {
 }
 
 router.get('/', isLoggedIn, function(req, res) {
-  res.render('login', { title: 'Login to Proof Assistant' });
+  var loginContext = req.flash('isLoginDirty');
+  var isLoginDirty = false;
+  if (loginContext.length > 0) {
+    isLoginDirty = loginContext[0]
+  }
+  res.render('login', {
+    title: 'Login to Proof Assistant',
+    isLoginDirty: isLoginDirty
+  });
 });
 
 router.get('/about', function(req, res) {
   res.render('about', {title: 'About Proof Assistant'})
 });
 
-router.get('/signup', function(req, res){
-  res.render('signup', {title: 'Sign Up on Proof Assistant'})
+router.get('/signup', isLoggedIn, function(req, res){
+  var signupContext = req.flash('isSignupDirty')
+  var isSignupDirty = false;
+  var errMsg = "";
+  if (signupContext.length>0){
+    isSignupDirty = true;
+    errMsg = signupContext[0];
+  }
+  res.render('signup', {
+    title: 'Sign Up on Proof Assistant',
+    isSignupDirty: isSignupDirty,
+    errMsg: errMsg
+  });
 });
 
 router.post('/register', function(req,res) {
@@ -32,20 +51,16 @@ router.post('/register', function(req,res) {
       return next(err)
     }
     if (user) {
-      res.render('signup', {
-        isSignupDirty: true,
-        errMsg: "Email already taken"
-      });
+      req.flash("isSignupDirty", "Email already taken!");
+      res.redirect('/signup');
     } else {
       var newUser = new User();
       newUser.email = req.body.email;
       newUser.password = req.body.password;
       newUser.save(function(err){
         if (err) {
-          res.render('signup', {
-            isSignupDirty: true,
-            errMsg: "Server error, try again later"
-          });
+          req.flash("isSignupDirty", "Server error, try again later!");
+          res.redirect('/signup');
         } else {
           req.session.user = newUser;
           res.redirect('/dashboard');
@@ -61,13 +76,15 @@ router.post('/login', function(req, res, next){
       return next(err)
     }
     if (!user) {
-      res.render('login', { isLoginDirty: true });
+        req.flash('isLoginDirty', true);
+        res.redirect('/');
     } else {
       if (req.body.password === user.password) {
         req.session.user = user;
         res.redirect('/dashboard');
       } else {
-        res.render('login', { isLoginDirty: true });
+        req.flash('isLoginDirty', true);
+        res.redirect('/');
       }
     }
   });

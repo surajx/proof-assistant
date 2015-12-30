@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var session = require('client-sessions');
 var bodyParser = require('body-parser');
+var flash = require('connect-flash');
 var mongoose = require('mongoose');
 
 var config = require('./config')
@@ -36,6 +37,7 @@ app.use(session({
   duration: 30 * 60 * 1000,
   activeDuration: 5 * 60 * 1000,
 }));
+app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Session Validation Middleware
