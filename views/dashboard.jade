@@ -20,18 +20,17 @@ block content
     div.jumbotron
       button.btn.btn-lg.btn-success(type="button",
       data-toggle="modal", data-target="#newProofModal") New Proof
-      div.container
-        if proofList.length>0
-          ul.list-group
-            each proof in proofList
-              if proof.status===true
-                a.list-group-item(href="/proover/"+proof.id)= proof.name
-                  span.label.label-pill.label-success.pull-right SUCCESS
-              else
-                a.list-group-item(href="/proover/"+proof.id)= proof.name
-                  span.label.label-pill.label-danger.pull-right ERROR
-        else
-          div.text-center You have no existing proofs, click on "New Proof" to create one.
+      if proofList.length>0
+        ul.list-group
+          each proof in proofList
+            if proof.status===true
+              a.list-group-item(href="/proover/"+proof.id)= proof.name
+                span.label.label-pill.label-success.pull-right SUCCESS
+            else
+              a.list-group-item(href="/proover/"+proof.id)= proof.name
+                span.label.label-pill.label-danger.pull-right ERROR
+      else
+        div.text-center You have no existing proofs, click on "New Proof" to create one.
 
   div.modal.fade#newProofModal(tabindex="-1", role="dialog", aria-labelledby="myModalLabel")
     div.modal-dialog(role="document")
