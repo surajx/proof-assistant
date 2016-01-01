@@ -1,8 +1,51 @@
 extend layout
 
 block content
-  if user
-    p= user
-  else
-    p Not authenticated
+  script(type='text/javascript').
+    $(document).ready(function(){
+      $("#proofName").on("input propertychange paste",function(){
+        var isDisabled = true;
+        console.log("hi!");
+        ($(this).val() === "") ? isDisabled=true : isDisabled=false;
+        $("#formSubmitBtn").prop("disabled", isDisabled);
+      });
+      $('#formSubmitBtn').click(function(){
+        $('#modalForm').submit();
+      });
+      $('.modal').on('shown.bs.modal', function () {
+        $(this).find('input:text:visible:first').focus();
+      });
+    });
+  div.container
+    div.jumbotron
+      button.btn.btn-lg.btn-success(type="button",
+      data-toggle="modal", data-target="#newProofModal") New Proof
+      div.container
+        if proofList.length>0
+          ul.list-group
+            each proof in proofList
+              if proof.status===true
+                a.list-group-item(href="/proover/"+proof.id)= proof.name
+                  span.label.label-pill.label-success.pull-right SUCCESS
+              else
+                a.list-group-item(href="/proover/"+proof.id)= proof.name
+                  span.label.label-pill.label-danger.pull-right ERROR
+        else
+          div.text-center You have no existing proofs, click on "New Proof" to create one.
+
+  div.modal.fade#newProofModal(tabindex="-1", role="dialog", aria-labelledby="myModalLabel")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title#myModalLabel Create New Proof
+        div.modal-body
+          form#modalForm(action='/proover/new', method="POST")
+            div.form-group
+              input.form-control.input-lg#proofName(type='text', name='proofName',
+              placeholder="Proof Name", required=true, autofocus=true)
+        div.modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") Cancel
+          button.btn.btn-primary#formSubmitBtn(type="button", disabled=true) Create
 

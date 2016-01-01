@@ -2,7 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var proofSchema = new Schema({
-  email: { type: Schema.Types.ObjectId, ref: 'User' },
+  userid: { type: Schema.Types.ObjectId, ref: 'User' },
+  proofStatus: {type: Boolean, required: true},
+  proofName: {type: String, required: true},
   proofData: { type: Object }
 });
 

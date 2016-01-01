@@ -10,7 +10,6 @@ var mongoose = require('mongoose');
 var config = require('./config')
 
 var routes = require('./routes/index');
-var userRoutes = require('./routes/user');
 
 mongoose.connect(config.db);
 
@@ -60,7 +59,6 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', routes);
-app.use('/users', userRoutes);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -73,7 +71,6 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);

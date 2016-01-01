@@ -104,7 +104,42 @@ function requireLogin(req, res, next) {
 };
 
 router.get('/dashboard', requireLogin, function(req,res) {
-  res.render('dashboard');
+  //TODO: Fetch all the proofs the user has created and send as locals.
+  Proof.find({userid:req.user.id}, function(err, proofs){
+    var proofList = [];
+    //TODO: if err do something
+    if (proofs && proofs.length>0){
+      proofs.forEach(function(proof){
+        proofList.push({
+          name:proof.proofName,
+          id:proof.id,
+          status: proof.proofStatus
+        });
+      });
+    }
+    res.render('dashboard', {proofList: proofList});
+  });
+});
+
+router.post('/proover/new', requireLogin, function(req,res){
+  var newProof = new Proof();
+  newProof.userid = req.user.id;
+  newProof.proofStatus = false;
+  newProof.proofName = req.body.proofName;
+  newProof.save(function(err, proof){
+    if (err) {
+      //TODO: Show an alert message that new proof creation resulted in an error.
+      res.redirect('/dashboard');
+    }else{
+      res.redirect('/proover/'+proof.id)
+    }
+  })
+});
+
+router.get('/proover/:id', requireLogin, function(req,res){
+  //TODO: Fetch the corresponding proof and save it in locals.
+  //TODO: if id is not avaiable send 404.
+  res.render('proover', {proofID: req.params.id});
 });
 
 module.exports = router;
