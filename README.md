@@ -9,6 +9,7 @@
 * The following commands in the terminal(command prompt)
   - `npm install -g gulp`
   - `npm install -g nodemon`
+  - `npm install -g browserify`
 * Navigate into the cloned repository and run the following command
   - `npm install`
 * Make sure that you are in the repository root and run the following command

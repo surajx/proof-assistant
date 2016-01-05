@@ -3,4 +3,24 @@ extend layout
 block content
   div.container
     div.jumbotron
-      p This is where students construct the proof for: #{proofID}
+      h2.text-center: span.label.label-primary= proof.proofName
+      button.btn.btn-lg.btn-success(type="button",
+      data-toggle="modal", data-target="#newLineModal") Add New Line
+      button.btn.btn-lg.btn-success.pull-right(type="button",
+      data-toggle="modal", data-target="#newGoalModal") Add New Goal
+      div.panel.panel-default
+        table.table.table-hover
+          each line in proof.proofData
+            tr
+              td
+                span= line.assumptions
+              td
+                span (#{line.line})
+              td.text-center.text-nowrap
+                span= line.proofLine
+              if line.justification
+                td.text-right
+                  span= line.justification+' '+line.rule
+              else
+                td.text-right
+                  span= line.rule

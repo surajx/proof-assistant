@@ -4,7 +4,10 @@ var router = express.Router();
 var User = require('../models/User.js');
 var Proof = require('../models/Proof.js');
 
-/* GET home page. */
+/* TODO:
+* My Brain - This file is bloated with stuff from all over the place
+* My Hands - Tomorrow!
+*/
 
 function isLoggedIn(req, res, next) {
   if (!req.user) {
@@ -122,24 +125,61 @@ router.get('/dashboard', requireLogin, function(req,res) {
 });
 
 router.post('/proover/new', requireLogin, function(req,res){
-  var newProof = new Proof();
-  newProof.userid = req.user.id;
-  newProof.proofStatus = false;
-  newProof.proofName = req.body.proofName;
-  newProof.save(function(err, proof){
-    if (err) {
-      //TODO: Show an alert message that new proof creation resulted in an error.
-      res.redirect('/dashboard');
-    }else{
-      res.redirect('/proover/'+proof.id)
+  var FOLParser = require('../FOL/parser/parser.js');
+  if (FOLParser.isWFS(req.body.proofName).status){
+    var seqArr = req.body.proofName.trim().split("⊢");
+    var proofData = [];
+    var proofGoal = "";
+    if (seqArr.length==2){
+      var premises = seqArr[0].split(",");
+      var assumptionCnt = 1;
+      premises.forEach(function(premise){
+        proofData.push({
+          assumptions   : assumptionCnt,
+          line          : assumptionCnt,
+          proofLine     : premise,
+          justification : null,
+          rule          : "A",
+          type          : "line"
+        });
+        assumptionCnt +=1;
+      });
+      proofGoal = seqArr[1];
+    } else {
+      proofGoal = seqArr[0];
     }
-  })
+    var newProof = new Proof();
+    newProof.userid = req.user.id;
+    newProof.proofStatus = false;
+    newProof.proofName = req.body.proofName;
+    newProof.proofData = proofData;
+    newProof.proofGoal = proofGoal;
+    newProof.save(function(err, proof){
+      if (err) {
+        //TODO: Show an alert message that new proof creation resulted in an error.
+        res.redirect('/dashboard');
+      } else {
+        res.redirect('/proover/'+proof.id)
+      }
+    })
+  } else {
+    //TODO: Show an alert message that new proof creation resulted in an error.
+    res.redirect('/dashboard');
+  }
 });
 
 router.get('/proover/:id', requireLogin, function(req,res){
   //TODO: Fetch the corresponding proof and save it in locals.
   //TODO: if id is not avaiable send 404.
-  res.render('proover', {proofID: req.params.id});
+  console.log(req.params.id);
+  Proof.findOne({_id:req.params.id}, function(err, proof){
+    if (err) {
+      res.redirect('/dashboard');
+    } else {
+      console.log(proof);
+      res.render('proover', {proof: proof});
+    }
+  });
 });
 
 module.exports = router;

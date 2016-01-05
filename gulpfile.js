@@ -1,7 +1,12 @@
 var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
-  livereload = require('gulp-livereload');
+  livereload = require('gulp-livereload'),
+  source = require('vinyl-source-stream'),
+  browserify = require('browserify'),
+  uglify = require('gulp-uglify'),
+  rename = require('gulp-rename'),
+  streamify = require('gulp-streamify');
 
 
 gulp.task('develop', function () {
@@ -21,6 +26,19 @@ gulp.task('develop', function () {
   });
 });
 
+gulp.task('browserify', function() {
+  var bundleStream = browserify()
+    .require('./FOL/parser/parser.js', {expose: 'FOLParser'})
+    .bundle();
+
+  bundleStream
+    .pipe(source('parser.js'))
+    .pipe(streamify(uglify()))
+    .pipe(rename('parserBundle.js'))
+    .pipe(gulp.dest('./public/js'));
+});
+
 gulp.task('default', [
-  'develop'
+  'develop',
+  'browserify'
 ]);
