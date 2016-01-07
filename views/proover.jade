@@ -1,5 +1,15 @@
 extend layout
 
+block append js
+  script(type='text/javascript').
+    var proof = !{JSON.stringify(proof)}
+    $(document).ready(function(){
+      console.log(proof);
+    });
+
+block append css
+  link(rel='stylesheet', href="/css/proof-line.css")
+
 block content
   div.container
     div.jumbotron
@@ -9,18 +19,20 @@ block content
       button.btn.btn-lg.btn-success.pull-right(type="button",
       data-toggle="modal", data-target="#newGoalModal") Add New Goal
       div.panel.panel-default
-        table.table.table-hover
-          each line in proof.proofData
-            tr
-              td
-                span= line.assumptions
-              td
-                span (#{line.line})
-              td.text-center.text-nowrap
-                span= line.proofLine
-              if line.justification
-                td.text-right
-                  span= line.justification+' '+line.rule
-              else
-                td.text-right
-                  span= line.rule
+        table.table.proof-table#proofTable
+          each line in proof.proofData.proofLines
+            tr.proof-line(id="line_#{line.lineNo}")
+              td.vert-align
+                span= line.depAssumptions.join(',')
+              td.vert-align
+                span (#{line.lineNo})
+              td.text-center.text-nowrap.vert-align
+                span= line.formule
+              td.text-right.vert-align
+                span= line.annotationsStr.join(',')
+              td.text-right.vert-align
+                span= line.rule.name
+              td.text-right.vert-align
+                button.btn.btn-default(type="button", id="edt_btn_#{line.lineNo}")
+                  span.glyphicon.glyphicon-edit
+                span.hidden#lineNo #{line.lineNo}

@@ -35,9 +35,12 @@ function isWFF(input) {
   var parser = getParserForTokens(tokens, errListener);
   parser.formula();
   if (errListener.getErrorMessages().length>0) {
-    return false;
+    return {
+      status: false,
+      err: errListener.getErrorMessages()
+    }
   } else {
-    return true;
+    return { status: true }
   }
 }
 

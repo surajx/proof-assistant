@@ -146,3 +146,15 @@ a:hover {
   margin-top: 3px;
   margin-bottom: 3px;
 }
+
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
+}
+
+.table.proof-table{
+  margin-top: 10px;
+}
+
+.list-group.proof-list{
+  margin-top: 10px;
+}

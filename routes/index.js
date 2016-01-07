@@ -1,12 +1,20 @@
+'use strict'
+
 var express = require('express');
 var router = express.Router();
 
 var User = require('../models/User.js');
-var Proof = require('../models/Proof.js');
+var ProofModel = require('../models/Proof.js');
+
+var Proof = require('../FOL/proof/Proof.js').Proof;
+var validateProof = require('../FOL/proof/Proof.js').validateProof;
+var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
 /* TODO:
-* My Brain - This file is bloated with stuff from all over the place
-* My Hands - Tomorrow!
+* (05/01/16)Brain - This file is bloated with stuff from all over the place
+* (05/01/16)Hands - Tomorrow!
+* (07/01/16)Brain - I beg of you, please refactor
+* (07/01/16)Hands - Meh!
 */
 
 function isLoggedIn(req, res, next) {
@@ -108,7 +116,7 @@ function requireLogin(req, res, next) {
 
 router.get('/dashboard', requireLogin, function(req,res) {
   //TODO: Fetch all the proofs the user has created and send as locals.
-  Proof.find({userid:req.user.id}, function(err, proofs){
+  ProofModel.find({userid:req.user.id}, function(err, proofs){
     var proofList = [];
     //TODO: if err do something
     if (proofs && proofs.length>0){
@@ -130,30 +138,38 @@ router.post('/proover/new', requireLogin, function(req,res){
     var seqArr = req.body.proofName.trim().split("⊢");
     var proofData = [];
     var proofGoal = "";
+    var premises = [];
     if (seqArr.length==2){
-      var premises = seqArr[0].split(",");
-      var assumptionCnt = 1;
-      premises.forEach(function(premise){
-        proofData.push({
-          assumptions   : assumptionCnt,
-          line          : assumptionCnt,
-          proofLine     : premise,
-          justification : null,
-          rule          : "A",
-          type          : "line"
+      premises = seqArr[0].split(",");
+      for (var i=0; i<premises.length; i++){
+        var proofLine = genProofLine({
+          depAssumptions : (i+1).toString(),
+          lineNo         : (i+1).toString(),
+          formule        : premises[i],
+          annotation     : "A",
+          rule           : null
         });
-        assumptionCnt +=1;
-      });
+        if (proofLine.status===true){
+          proofData.push(proofLine.proofLine);
+        } else {
+          //TODO: Show an alert message that new proof creation resulted in an error.
+          res.redirect('/dashboard');
+          return;
+        }
+      }
       proofGoal = seqArr[1];
     } else {
       proofGoal = seqArr[0];
     }
-    var newProof = new Proof();
+    var proof = new Proof(premises, proofGoal);
+    proof.proofLines = proofData;
+    var validationOP = validateProof(proof);
+    console.log(validationOP);
+    var newProof = new ProofModel();
     newProof.userid = req.user.id;
-    newProof.proofStatus = false;
+    newProof.proofStatus = validationOP;
     newProof.proofName = req.body.proofName;
-    newProof.proofData = proofData;
-    newProof.proofGoal = proofGoal;
+    newProof.proofData = proof;
     newProof.save(function(err, proof){
       if (err) {
         //TODO: Show an alert message that new proof creation resulted in an error.
@@ -161,7 +177,7 @@ router.post('/proover/new', requireLogin, function(req,res){
       } else {
         res.redirect('/proover/'+proof.id)
       }
-    })
+    });
   } else {
     //TODO: Show an alert message that new proof creation resulted in an error.
     res.redirect('/dashboard');
@@ -171,13 +187,12 @@ router.post('/proover/new', requireLogin, function(req,res){
 router.get('/proover/:id', requireLogin, function(req,res){
   //TODO: Fetch the corresponding proof and save it in locals.
   //TODO: if id is not avaiable send 404.
-  console.log(req.params.id);
-  Proof.findOne({_id:req.params.id}, function(err, proof){
-    if (err) {
+  ProofModel.findOne({_id:req.params.id}, function(err, proof){
+    if (err || !proof) {
       res.redirect('/dashboard');
     } else {
-      console.log(proof);
-      res.render('proover', {proof: proof});
+      var validationOP = validateProof(proof.proofData);
+      res.render('proover', {proof: proof, validationOP: validationOP});
     }
   });
 });

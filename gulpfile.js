@@ -29,11 +29,13 @@ gulp.task('develop', function () {
 gulp.task('browserify', function() {
   var bundleStream = browserify()
     .require('./FOL/parser/parser.js', {expose: 'FOLParser'})
+    .require('./FOL/proof/Proof.js', {expose: 'FOLValidator'})
     .bundle();
 
   bundleStream
     .pipe(source('parser.js'))
-    .pipe(streamify(uglify()))
+    //.pipe(streamify(uglify()
+    // .on('error', function(e) { console.log('\x07',e.message);})))
     .pipe(rename('parserBundle.js'))
     .pipe(gulp.dest('./public/js'));
 });
