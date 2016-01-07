@@ -34,8 +34,7 @@ gulp.task('browserify', function() {
 
   bundleStream
     .pipe(source('parser.js'))
-    //.pipe(streamify(uglify()
-    // .on('error', function(e) { console.log('\x07',e.message);})))
+    .pipe(streamify(uglify()))
     .pipe(rename('parserBundle.js'))
     .pipe(gulp.dest('./public/js'));
 });
