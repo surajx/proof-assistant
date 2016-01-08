@@ -1,11 +1,10 @@
 extend layout
 
 block append js
-  script(type='text/javascript').
-    var proof = !{JSON.stringify(proof)}
-    $(document).ready(function(){
-      console.log(proof);
-    });
+  script(src="/js/parserBundle.js")
+  script(type="text/javascript").
+    var proofModel = !{JSON.stringify(proofModel)}
+  script(src="/js/proover.js")
 
 block append css
   link(rel='stylesheet', href="/css/proof-line.css")
@@ -13,14 +12,20 @@ block append css
 block content
   div.container
     div.jumbotron
-      h2.text-center: span.label.label-primary= proof.proofName
+      h2.text-center: span.label.label-primary= proofModel.proofName
       button.btn.btn-lg.btn-success(type="button",
       data-toggle="modal", data-target="#newLineModal") Add New Line
-      button.btn.btn-lg.btn-success.pull-right(type="button",
-      data-toggle="modal", data-target="#newGoalModal") Add New Goal
+      button.btn.btn-lg.btn-primary#saveProof(type="button") SAVE
+      -var v_st = proofModel.proofStatus;
+      if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
+        span.label.label-pill.label-success.pull-right#proofStatus SUCCESS
+      else if v_st.isProofValid && v_st.isPremiseMaintained && !v_st.isGoalAttained
+        span.label.label-pill.label-warning.pull-right#proofStatus GOAL NOT ATTAINED
+      else if !v_st.isProofValid
+        span.label.label-pill.label-danger.pull-right#proofStatus INVALID PROOF
       div.panel.panel-default
         table.table.proof-table#proofTable
-          each line in proof.proofData.proofLines
+          each line in proofModel.proofData.proofLines
             tr.proof-line(id="line_#{line.lineNo}")
               td.vert-align
                 span= line.depAssumptions.join(',')
@@ -31,8 +36,52 @@ block content
               td.text-right.vert-align
                 span= line.annotationsStr.join(',')
               td.text-right.vert-align
-                span= line.rule.name
+                if line.rule=="A"
+                  span= ""
+                else
+                  span= line.rule
               td.text-right.vert-align
                 button.btn.btn-default(type="button", id="edt_btn_#{line.lineNo}")
                   span.glyphicon.glyphicon-edit
-                span.hidden#lineNo #{line.lineNo}
+                span.hidden #{line.lineNo}
+
+  div.modal.fade#newLineModal(tabindex="-1", role="dialog",
+  aria-labelledby="myModalLabel")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title#myModalLabel Add New Line
+        div.modal-body
+          div.form-group.new-proof-line-form
+            div.row
+              input.form-control.input-lg#depAssumptions(type='text',
+              name='depAssumptions',
+              placeholder="Enter dependent assumption seperated by comma",
+              required=true, autofocus=true)
+            div.row
+              input.form-control.input-lg#formule(type='text', name='formule',
+              placeholder="Enter formule", required=true, autofocus=true)
+            div.row
+              input.form-control.input-lg#annotation(type='text', name='annotation',
+              placeholder="Enter annotations seperated by comma",
+              required=true, autofocus=true)
+            div.row
+              div.input-group
+                input.form-control#selectedRule(type="text",
+                aria-label="selectedRule", readonly=true)
+                div.input-group-btn
+                  button.btn.btn-default.dropdown-toggle(type="button",
+                  id="dropdownMenu1", data-toggle="dropdown",
+                  aria-haspopup="true", aria-expanded="true") Rule
+                    span.caret
+                  ul.dropdown-menu.dropdown-menu-right(aria-labelledby="dropdownMenu1")
+                    each rule in ruleList
+                      li: a.proof-rule(href="#")= rule
+          div.alert.alert-danger.fade.in.hidden#errDiv
+            a.close(href="#", data-hide="alert", aria-label="close") &times;
+            p#errMsg
+        div.modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") Cancel
+          button.btn.btn-primary#lineSubmitBtn(type="button") Create

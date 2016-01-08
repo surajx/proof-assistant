@@ -1,8 +1,6 @@
-function AssumptionRule(){
-  AssumptionRule.rulename = "";
-}
+function AssumptionRule(){};
 
-AssumptionRule.prototype.validate = function(){
+AssumptionRule.prototype.validate = function(proofGraph, curProofLine){
   return true;
 }
 

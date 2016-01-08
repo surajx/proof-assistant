@@ -164,7 +164,6 @@ router.post('/proover/new', requireLogin, function(req,res){
     var proof = new Proof(premises, proofGoal);
     proof.proofLines = proofData;
     var validationOP = validateProof(proof);
-    console.log(validationOP);
     var newProof = new ProofModel();
     newProof.userid = req.user.id;
     newProof.proofStatus = validationOP;
@@ -191,8 +190,8 @@ router.get('/proover/:id', requireLogin, function(req,res){
     if (err || !proof) {
       res.redirect('/dashboard');
     } else {
-      var validationOP = validateProof(proof.proofData);
-      res.render('proover', {proof: proof, validationOP: validationOP});
+      var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
+      res.render('proover', {proofModel: proof, ruleList: ruleList});
     }
   });
 });

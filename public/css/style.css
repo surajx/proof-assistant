@@ -158,3 +158,8 @@ a:hover {
 .list-group.proof-list{
   margin-top: 10px;
 }
+
+.form-group.new-proof-line-form {
+  margin-left: 10px;
+  margin-right: 10px;
+}

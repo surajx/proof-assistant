@@ -1,5 +1,6 @@
 var ProofGraph = require('./ProofGraph.js');
 var AssumptionRule = require('./rules/AssumptionRule.js');
+var ProofLine = require('./ProofLine.js');
 
 function Proof(premises, goal){
   this.premises = premises;
@@ -37,46 +38,27 @@ function validateProof(proof) {
 
 function DFS_VALIDATE(proofGraph, curProofLine){
   var isCurProofLineValid = true;
-  proofGraph.getAdjOf(curProofLine).forEach(function(depProofLines){
+  var adjProofLines = proofGraph.getAdjOf(curProofLine);
+  for(var i=0; i<adjProofLines.length;i++){
+    var depProofLines = adjProofLines[i];
     if(!isCurProofLineValid) return false;
     isCurProofLineValid = isCurProofLineValid &&
       (DFS_VALIDATE(proofGraph, depProofLines));
-  });
+  }
   isCurProofLineValid = isCurProofLineValid &&
     (matchRule(curProofLine.rule).validate(proofGraph, curProofLine));
   return isCurProofLineValid;
 }
 
-function matchRule(rule) {
-  switch (rule) {
-    case "A" :
-      return new AssumptionRule();
-    case "∧E":
-      return new ConjunctionElimRule();
-    case "∧I":
-      return new ConjunctionIntroRule();
-    case "∨E":
-      return new DisjunctionElimRule();
-    case "∨I":
-      return new DisjunctionIntroRule();
-    case "→E":
-      return new ImplicationElimRule();
-    case "→I":
-      return new ImplicationIntroRule();
-    case "RAA":
-      return new ReductioAdAbsurdumRule();
-    case "¬¬E":
-      return new DoubleNegationElimRule();
-    case "¬¬I":
-      return new DoubleNegationIntroRule();
-    case "¬E":
-      return new NegationElimRule();
-    case "¬I":
-      return new NegationIntroRule();
-    default:
-      throw "Invalid Rule specified: " + rule;
+function matchRule(ruleStr) {
+  var rules = require('./rules/rules.js');
+  var rule = rules[ruleStr];
+  if (rule===undefined){
+    throw "Invalid Rule specified: " + ruleStr;
   }
+  return rule;
 }
 
 module.exports.validateProof = validateProof;
 module.exports.Proof = Proof;
+module.exports.genProofLine = ProofLine.genProofLine;

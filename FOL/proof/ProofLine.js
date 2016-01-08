@@ -81,20 +81,8 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     }
   }
 
-  if (rule==="A"  ||
-      rule==="∧E" ||
-      rule==="∧I" ||
-      rule==="∨E" ||
-      rule==="∨I" ||
-      rule==="→E" ||
-      rule==="RAA"||
-      rule==="¬¬E"||
-      rule==="¬¬I"||
-      rule==="¬E" ||
-      rule==="¬I"
-    ) {
-    this.rule = rule;
-  } else{
+  var ruleList = Object.keys(require('./rules/rules.js'));
+  if (ruleList.indexOf(rule)<0){
     throw "Invalid Rule specified: " + rule;
   }
 }
