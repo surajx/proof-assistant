@@ -65,18 +65,18 @@ $(document).ready(function(){
           var v_st = FOLValidator.validateProof(proof);
           console.log(v_st);
           if (v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained){
-            $("#proofStatus").text("SUCCESS");
+            $("#ps_h").text("SUCCESS");
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-success");
           }
           else if(v_st.isProofValid &&
             v_st.isPremiseMaintained && !v_st.isGoalAttained) {
-            $("#proofStatus").text("GOAL NOT ATTAINED");
+            $("#ps_h").text("GOAL NOT ATTAINED");
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-warning");
           }
           else if(!v_st.isProofValid){
-            $("#proofStatus").text("INVALID PROOF");
+            $("#ps_h").text("INVALID PROOF");
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-danger");
           }
@@ -90,7 +90,7 @@ $(document).ready(function(){
         showError(proofLine.err);
       }
     } else {
-      showError(wfsCheck.err);
+      showError(wffCheck.err);
     }
   });
 });

@@ -46,13 +46,13 @@ block content
             -var v_st = proof.status;
             if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
               a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
-                span.label.label-pill.label-success.pull-right SUCCESS
+                span.label.label-pill.label-success.pull-right: h6#ps_h(style="color:white;") SUCCESS
             else if v_st.isProofValid && v_st.isPremiseMaintained && !v_st.isGoalAttained
               a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
-                span.label.label-pill.label-warning.pull-right GOAL NOT ATTAINED
+                span.label.label-pill.label-warning.pull-right(style="vertical-align: middle;"): h6#ps_h(style="color:white;") GOAL NOT ATTAINED
             else if !v_st.isProofValid
               a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
-                span.label.label-pill.label-danger.pull-right INVALID PROOF
+                span.label.label-pill.label-danger.pull-right: h6#ps_h(style="color:white;") INVALID PROOF
       else
         div.text-center You have no existing proofs, click on "New Proof" to create one.
 

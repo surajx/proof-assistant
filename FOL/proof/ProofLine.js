@@ -85,6 +85,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   if (ruleList.indexOf(rule)<0){
     throw "Invalid Rule specified: " + rule;
   }
+  this.rule = rule;
 }
 
 function genProofLine(proofLineData) {

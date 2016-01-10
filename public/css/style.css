@@ -163,3 +163,15 @@ a:hover {
   margin-left: 10px;
   margin-right: 10px;
 }
+
+a.list-group-item {
+  overflow: hidden;
+  display: table;
+  width:100%;
+}
+
+a.list-group-item > span {
+  display: table-cell;
+  vertical-align: middle;
+  float:none;
+}
