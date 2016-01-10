@@ -1,34 +1,58 @@
 extend layout
 
-block content
+block append js
+  script(src="/js/parserBundle.js")
   script(type='text/javascript').
     $(document).ready(function(){
+
+      $("[data-hide]").on("click", function(){
+        $(this).closest("." + $(this).attr("data-hide")).hide();
+      });
+
       $("#proofName").on("input propertychange paste",function(){
         var isDisabled = true;
-        console.log("hi!");
         ($(this).val() === "") ? isDisabled=true : isDisabled=false;
         $("#formSubmitBtn").prop("disabled", isDisabled);
       });
+
       $('#formSubmitBtn').click(function(){
-        $('#modalForm').submit();
+        var FOLParser = require('FOLParser');
+        var wfsCheck = FOLParser.isWFS($('#proofName').val());
+        if (wfsCheck.status){
+          $('#modalForm').submit();
+        } else {
+          $( '#wfsErrDiv' ).removeClass( "hidden" );
+          $('#wfsErrDiv').show();
+          $('#wfsErrMsg').text(wfsCheck.err.join('\n'));
+        }
       });
+
       $('.modal').on('shown.bs.modal', function () {
         $(this).find('input:text:visible:first').focus();
       });
     });
+
+block append css
+  link(rel='stylesheet', href="/css/proof-line.css")
+
+block content
   div.container
     div.jumbotron
       button.btn.btn-lg.btn-success(type="button",
       data-toggle="modal", data-target="#newProofModal") New Proof
       if proofList.length>0
-        ul.list-group
+        div.list-group.proof-list
           each proof in proofList
-            if proof.status===true
-              a.list-group-item(href="/proover/"+proof.id)= proof.name
-                span.label.label-pill.label-success.pull-right SUCCESS
-            else
-              a.list-group-item(href="/proover/"+proof.id)= proof.name
-                span.label.label-pill.label-danger.pull-right ERROR
+            -var v_st = proof.status;
+            if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
+              a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
+                span.label.label-pill.label-success.pull-right: h6#ps_h(style="color:white;") SUCCESS
+            else if v_st.isProofValid && v_st.isPremiseMaintained && !v_st.isGoalAttained
+              a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
+                span.label.label-pill.label-warning.pull-right(style="vertical-align: middle;"): h6#ps_h(style="color:white;") GOAL NOT ATTAINED
+            else if !v_st.isProofValid
+              a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
+                span.label.label-pill.label-danger.pull-right: h6#ps_h(style="color:white;") INVALID PROOF
       else
         div.text-center You have no existing proofs, click on "New Proof" to create one.
 
@@ -43,7 +67,10 @@ block content
           form#modalForm(action='/proover/new', method="POST")
             div.form-group
               input.form-control.input-lg#proofName(type='text', name='proofName',
-              placeholder="Proof Name", required=true, autofocus=true)
+              placeholder="Enter a Valid Sequent", required=true, autofocus=true)
+            div.alert.alert-danger.fade.in.hidden#wfsErrDiv
+              a.close(href="#", data-hide="alert", aria-label="close") &times;
+              p#wfsErrMsg
         div.modal-footer
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
           button.btn.btn-primary#formSubmitBtn(type="button", disabled=true) Create

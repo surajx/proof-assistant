@@ -1,0 +1,22 @@
+@font-face {
+	font-family: 'Computer Modern Upright Italic';
+	src: url('/fonts/cmunui.eot');
+	src: url('/fonts/cmunui.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/cmunui.woff') format('woff'),
+		 url('/fonts/cmunui.uif') format('truetype'),
+		 url('/fonts/cmunui.svg#cmunui') format('svg');
+	font-weight: normal;
+	font-style: italic;
+}
+
+.proof-line{
+  font-size: 20px;
+  font-family: "Computer Modern Upright Italic";
+  font-weight: bold;
+}
+
+.proof-rule {
+  font-size: 14px;
+  font-family: "Computer Modern Upright Italic";
+  font-weight: bold;
+}

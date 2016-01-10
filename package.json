@@ -6,20 +6,28 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "antlr4": "file:./lib/antlr4",
     "body-parser": "^1.13.3",
     "client-sessions": "^0.7.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.3.3",
     "express": "^4.13.3",
+    "hashmap": "^2.0.4",
     "jade": "^1.11.0",
     "mongoose": "^4.3.3",
     "morgan": "^1.6.1",
     "serve-favicon": "^2.3.0"
   },
   "devDependencies": {
+    "browserify": "^12.0.1",
     "gulp": "^3.9.0",
-    "gulp-nodemon": "^2.0.2",
     "gulp-livereload": "^3.8.0",
-    "gulp-plumber": "^1.0.0"
+    "gulp-nodemon": "^2.0.2",
+    "gulp-plumber": "^1.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^1.5.1",
+    "vinyl-source-stream": "^1.1.0",
+    "gulp-util": "^3.0.7"
   }
 }

@@ -146,3 +146,32 @@ a:hover {
   margin-top: 3px;
   margin-bottom: 3px;
 }
+
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
+}
+
+.table.proof-table{
+  margin-top: 10px;
+}
+
+.list-group.proof-list{
+  margin-top: 10px;
+}
+
+.form-group.new-proof-line-form {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+a.list-group-item {
+  overflow: hidden;
+  display: table;
+  width:100%;
+}
+
+a.list-group-item > span {
+  display: table-cell;
+  vertical-align: middle;
+  float:none;
+}
