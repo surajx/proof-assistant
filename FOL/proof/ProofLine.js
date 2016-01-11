@@ -34,8 +34,11 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
 
   this.annotations = [];
   this.annotationsStr = [];
-  if (annotations==="A"){
+  if (annotations==="A" || rule==="A"){
+    //TODO: Confirm if we should throw error if some annotation other than "A"
+    //is give for assumption rule.
     rule = "A";
+    annotations = "A";
     this.annotations.push({
       annotation: annotations,
       discharge : null
