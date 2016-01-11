@@ -13,18 +13,21 @@ function Proof(premises, goal) {
 
 function validateProof(proof) {
   var prfLineLen = proof.proofLines.length;
-  var proofGraph = new ProofGraph(proof.proofLines);
   var goal = proof.goal.replace(/ /g,'');
-  var lastProoLineFormule = proof.proofLines[prfLineLen-1].formule.replace(/ /g,'');
+  var isProofValid = true;
+  if (prfLineLen>0) {
+    var proofGraph = new ProofGraph(proof.proofLines);
+    var lastProoLineFormule = proof.proofLines[prfLineLen-1].formule.replace(/ /g,'');
 
-  //Checking that the last line is derived using a graph data structure.
-  try{
-    var isProofValid = DFS_VALIDATE(proofGraph, proof.proofLines[prfLineLen-1]);
-  } catch (err) {
-    console.log(err);
-    return {
-      isProofValid: false,
-      err: err
+    //Checking that the last line is derived using a graph data structure.
+    try {
+      var isProofValid = DFS_VALIDATE(proofGraph, proof.proofLines[prfLineLen-1]);
+    } catch (err) {
+      console.log(err);
+      return {
+        isProofValid: false,
+        err: err
+      }
     }
   }
 
@@ -79,7 +82,8 @@ function genNewProof(proofName){
     var proofLines = [];
     var proofGoal = "";
     var premises = [];
-    if (seqArr.length==2){
+    //Indexing is okay since its WFS.
+    if (seqArr[0]!==''){
       premises = seqArr[0].split(",");
       for (var i=0; i<premises.length; i++){
         var proofLine = genProofLine({
@@ -98,17 +102,8 @@ function genNewProof(proofName){
           };
         }
       }
-      proofGoal = seqArr[1];
-    } else if (seqArr.length==1){
-      proofGoal = seqArr[0];
-    } else {
-      //This is dead code since control wont reach here, a sequent without
-      // a goal is not a WFS according to the designed grammar. But still...
-      return {
-        status: false,
-        err: "Invalid sequent."
-      }
     }
+    proofGoal = seqArr[1];
     var proof = new Proof(premises, proofGoal);
     proof.proofLines = proofLines;
     //unwanted validation: Ideally a new proof object contains only assumptions

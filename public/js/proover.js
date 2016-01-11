@@ -3,6 +3,7 @@ $(document).ready(function(){
   console.log(proof);
 
   function addNewProofLine(proofLine) {
+    var dispRule = proofLine.rule==="A"?"":proofLine.rule;
     $('#proofTable').append('<tr class= "proof-line" \
       id="line_'+proofLine.lineNo+'"></tr>');
     $('#line_'+proofLine.lineNo).html(
@@ -14,7 +15,7 @@ $(document).ready(function(){
         </span></td> \
       <td class='text-right vert-align'><span>"+ proofLine.annotationsStr.join(',') +" \
         </span></td> \
-      <td class='text-right vert-align'><span>"+ proofLine.rule +" \
+      <td class='text-right vert-align'><span>"+ dispRule +" \
         </span></td> \
       <td class='text-right vert-align'><button class='btn btn-default' \
        type='button', id='edt_btn_" + proofLine.lineNo + "'><span class = \
@@ -47,7 +48,9 @@ $(document).ready(function(){
     var formule = $("#formule").val();
     var annotation = $("#annotation").val();
     var selectedRule = $("#selectedRule").val();
-    var lineNo = (parseInt($('#proofTable tr:last').find('.hidden').text())+1).toString();
+    var curLineNo = parseInt($('#proofTable tr:last').find('.hidden').text());
+    if (isNaN(curLineNo)) curLineNo = 0;
+    var lineNo = (curLineNo+1).toString();
     var FOLParser = require('FOLParser');
     var wffCheck = FOLParser.isWFF(formule);
     if (wffCheck.status){

@@ -136,6 +136,7 @@ router.post('/proover/new', requireLogin, function(req,res){
   var proofContainer = genNewProof(req.body.proofName);
   if (proofContainer.status===false){
     //TODO use proofContainer.err to display an error message in dashboard.
+    console.log(proofContainer.err);
     res.redirect('/dashboard');
     return;
   }

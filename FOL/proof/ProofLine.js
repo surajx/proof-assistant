@@ -6,7 +6,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   }
   var wffCheck = parser.isWFF(formule);
   if (wffCheck.status===false){
-    throw "Invalid Fomule:\n" + wffCheck.err.join('\n');
+    throw "Invalid Fomule\n" + wffCheck.err.join('\n');
   }
   this.formule = formule;
 
