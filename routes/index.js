@@ -1,5 +1,3 @@
-'use strict'
-
 var express = require('express');
 var router = express.Router();
 
@@ -160,6 +158,7 @@ router.post('/proover/new', requireLogin, function(req,res){
 router.get('/proover/:id', requireLogin, function(req,res){
   //TODO: Fetch the corresponding proof and save it in locals.
   //TODO: if id is not avaiable send 404.
+  //TODO: make sure the same logged in user is fetching his proof.
   ProofModel.findOne({_id:req.params.id}, function(err, proof){
     if (err || !proof) {
       res.redirect('/dashboard');

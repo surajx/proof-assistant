@@ -55,18 +55,17 @@ $(document).ready(function(){
     var wffCheck = FOLParser.isWFF(formule);
     if (wffCheck.status){
       var FOLValidator = require('FOLValidator');
-      var proofLine = FOLValidator.genProofLine({
+      var proofLineContainer = FOLValidator.genProofLine({
         depAssumptions : depAssumptions,
         lineNo         : lineNo,
         formule        : formule,
         annotation     : annotation,
         rule           : selectedRule
       });
-      if (proofLine.status===true){
-        proof.proofLines.push(proofLine.proofLine);
-        try{
+      if (proofLineContainer.status===true) {
+        proof.proofLines.push(proofLineContainer.proofLine);
+        try {
           var v_st = FOLValidator.validateProof(proof);
-          console.log(v_st);
           if (v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained){
             $("#ps_h").text("SUCCESS");
             removeAllLabelModifiers();
@@ -78,19 +77,25 @@ $(document).ready(function(){
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-warning");
           }
-          else if(!v_st.isProofValid){
+          else if(!v_st.isProofValid) {
+            /*
             $("#ps_h").text("INVALID PROOF");
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-danger");
+            */
+            proof.proofLines.splice(-1,1);
+            showError(v_st.err);
           }
-          addNewProofLine(proofLine.proofLine);
-          //Update in server by ajax
-          $('#newLineModal').modal('hide');
+          if (v_st.isProofValid) {
+            addNewProofLine(proofLineContainer.proofLine);
+            //TODO: Update in server by ajax
+            $('#newLineModal').modal('hide');
+          }
         } catch (err){
           showError(err);
         }
       } else {
-        showError(proofLine.err);
+        showError(proofLineContainer.err);
       }
     } else {
       showError(wffCheck.err);

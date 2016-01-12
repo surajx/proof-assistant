@@ -21,7 +21,7 @@ function validateProof(proof) {
 
     //Checking that the last line is derived using a graph data structure.
     try {
-      var isProofValid = DFS_VALIDATE(proofGraph, proof.proofLines[prfLineLen-1]);
+      isProofValid = DFS_VALIDATE(proofGraph, proof.proofLines[prfLineLen-1]);
     } catch (err) {
       console.log(err);
       return {
