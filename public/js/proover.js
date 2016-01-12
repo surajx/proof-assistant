@@ -3,6 +3,7 @@ $(document).ready(function(){
   console.log(proof);
 
   function addNewProofLine(proofLine) {
+    var dispRule = proofLine.rule==="A"?"":proofLine.rule;
     $('#proofTable').append('<tr class= "proof-line" \
       id="line_'+proofLine.lineNo+'"></tr>');
     $('#line_'+proofLine.lineNo).html(
@@ -14,7 +15,7 @@ $(document).ready(function(){
         </span></td> \
       <td class='text-right vert-align'><span>"+ proofLine.annotationsStr.join(',') +" \
         </span></td> \
-      <td class='text-right vert-align'><span>"+ proofLine.rule +" \
+      <td class='text-right vert-align'><span>"+ dispRule +" \
         </span></td> \
       <td class='text-right vert-align'><button class='btn btn-default' \
        type='button', id='edt_btn_" + proofLine.lineNo + "'><span class = \
@@ -47,23 +48,24 @@ $(document).ready(function(){
     var formule = $("#formule").val();
     var annotation = $("#annotation").val();
     var selectedRule = $("#selectedRule").val();
-    var lineNo = (parseInt($('#proofTable tr:last').find('.hidden').text())+1).toString();
+    var curLineNo = parseInt($('#proofTable tr:last').find('.hidden').text());
+    if (isNaN(curLineNo)) curLineNo = 0;
+    var lineNo = (curLineNo+1).toString();
     var FOLParser = require('FOLParser');
     var wffCheck = FOLParser.isWFF(formule);
     if (wffCheck.status){
       var FOLValidator = require('FOLValidator');
-      var proofLine = FOLValidator.genProofLine({
+      var proofLineContainer = FOLValidator.genProofLine({
         depAssumptions : depAssumptions,
         lineNo         : lineNo,
         formule        : formule,
         annotation     : annotation,
         rule           : selectedRule
       });
-      if (proofLine.status===true){
-        proof.proofLines.push(proofLine.proofLine);
-        try{
+      if (proofLineContainer.status===true) {
+        proof.proofLines.push(proofLineContainer.proofLine);
+        try {
           var v_st = FOLValidator.validateProof(proof);
-          console.log(v_st);
           if (v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained){
             $("#ps_h").text("SUCCESS");
             removeAllLabelModifiers();
@@ -75,19 +77,25 @@ $(document).ready(function(){
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-warning");
           }
-          else if(!v_st.isProofValid){
+          else if(!v_st.isProofValid) {
+            /*
             $("#ps_h").text("INVALID PROOF");
             removeAllLabelModifiers();
             $( '#proofStatus' ).addClass("label-danger");
+            */
+            proof.proofLines.splice(-1,1);
+            showError(v_st.err);
           }
-          addNewProofLine(proofLine.proofLine);
-          //Update in server by ajax
-          $('#newLineModal').modal('hide');
+          if (v_st.isProofValid) {
+            addNewProofLine(proofLineContainer.proofLine);
+            //TODO: Update in server by ajax
+            $('#newLineModal').modal('hide');
+          }
         } catch (err){
           showError(err);
         }
       } else {
-        showError(proofLine.err);
+        showError(proofLineContainer.err);
       }
     } else {
       showError(wffCheck.err);

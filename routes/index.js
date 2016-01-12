@@ -1,13 +1,10 @@
-'use strict'
-
 var express = require('express');
 var router = express.Router();
 
 var User = require('../models/User.js');
 var ProofModel = require('../models/Proof.js');
 
-var Proof = require('../FOL/proof/Proof.js').Proof;
-var validateProof = require('../FOL/proof/Proof.js').validateProof;
+var genNewProof = require('../FOL/proof/Proof.js').genNewProof;
 var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
 /* TODO:
@@ -133,59 +130,35 @@ router.get('/dashboard', requireLogin, function(req,res) {
 });
 
 router.post('/proover/new', requireLogin, function(req,res){
-  var FOLParser = require('../FOL/parser/parser.js');
-  if (FOLParser.isWFS(req.body.proofName).status){
-    var seqArr = req.body.proofName.trim().split("⊢");
-    var proofData = [];
-    var proofGoal = "";
-    var premises = [];
-    if (seqArr.length==2){
-      premises = seqArr[0].split(",");
-      for (var i=0; i<premises.length; i++){
-        var proofLine = genProofLine({
-          depAssumptions : (i+1).toString(),
-          lineNo         : (i+1).toString(),
-          formule        : premises[i],
-          annotation     : "A",
-          rule           : null
-        });
-        if (proofLine.status===true){
-          proofData.push(proofLine.proofLine);
-        } else {
-          //TODO: Show an alert message that new proof creation resulted in an error.
-          res.redirect('/dashboard');
-          return;
-        }
-      }
-      proofGoal = seqArr[1];
-    } else {
-      proofGoal = seqArr[0];
-    }
-    var proof = new Proof(premises, proofGoal);
-    proof.proofLines = proofData;
-    var validationOP = validateProof(proof);
-    var newProof = new ProofModel();
-    newProof.userid = req.user.id;
-    newProof.proofStatus = validationOP;
-    newProof.proofName = req.body.proofName;
-    newProof.proofData = proof;
-    newProof.save(function(err, proof){
-      if (err) {
-        //TODO: Show an alert message that new proof creation resulted in an error.
-        res.redirect('/dashboard');
-      } else {
-        res.redirect('/proover/'+proof.id)
-      }
-    });
-  } else {
-    //TODO: Show an alert message that new proof creation resulted in an error.
+  var proofName = req.body.proofName.trim().replace(/\s\s+/g, ' ');
+  var proofContainer = genNewProof(req.body.proofName);
+  if (proofContainer.status===false){
+    //TODO use proofContainer.err to display an error message in dashboard.
+    console.log(proofContainer.err);
     res.redirect('/dashboard');
+    return;
   }
+  var proof = proofContainer.proof;
+  var proofStatus = proofContainer.proofStatus;
+  var newProof = new ProofModel();
+  newProof.userid = req.user.id;
+  newProof.proofStatus = proofStatus;
+  newProof.proofName = proofName;
+  newProof.proofData = proof;
+  newProof.save(function(err, proof){
+    if (err) {
+      //TODO: Show an alert message that new proof creation resulted in an error.
+      res.redirect('/dashboard');
+    } else {
+      res.redirect('/proover/'+proof.id)
+    }
+  });
 });
 
 router.get('/proover/:id', requireLogin, function(req,res){
   //TODO: Fetch the corresponding proof and save it in locals.
   //TODO: if id is not avaiable send 404.
+  //TODO: make sure the same logged in user is fetching his proof.
   ProofModel.findOne({_id:req.params.id}, function(err, proof){
     if (err || !proof) {
       res.redirect('/dashboard');
