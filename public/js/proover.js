@@ -45,7 +45,7 @@ $(document).ready(function(){
 
   $("#lineSubmitBtn").click(function(){
     var depAssumptions = $("#depAssumptions").val();
-    var formule = $("#formule").val();
+    var formule = $("#formule").val().trim().replace(/\s\s+/g, ' ');
     var annotation = $("#annotation").val();
     var selectedRule = $("#selectedRule").val();
     var curLineNo = parseInt($('#proofTable tr:last').find('.hidden').text());

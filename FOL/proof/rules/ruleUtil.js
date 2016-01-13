@@ -1,32 +1,41 @@
 var antlr4 = require('antlr4/index');
 var FOLTreeWalker = require('../../parser/FOLTreeWalker.js');
-var FOLLexer   = require('../../parser/gen/FOLLexer').FOLLexer;
-var FOLParser  = require('../../parser/gen/FOLParser').FOLParser;
+var FormulaContext  = require('../../parser/gen/FOLParser.js').FormulaContext;
+
+var getParserForFormule  = require('../../parser/parser.js').getParserForFormule;
 
 
-function getTopLevelConjuncts(input){
-  var inputStream = new antlr4.InputStream(input);
-  var lexer = new FOLLexer(inputStream);
-  var tokens = new antlr4.CommonTokenStream(lexer);
-  var parser = new FOLParser(tokens);
-
-  var conjunctionTopElements = [];
-  var gotConjunctionTop = false;
-  FOLTreeWalker.prototype.enterConjunction = function(ctx) {
-    if (ctx.children.length>=3 && !gotConjunctionTop){
-      gotConjunctionTop = true;
+function getTopLevelFormulas(input) {
+  //At this point input is validated to be a WFF.
+  var parser = getParserForFormule(input);
+  var topLevelFormulas = [];
+  //Very innefficient: not walking the entire tree.
+  //Need to figure out how to stop the walk once the top is found
+  var gotTopLevelFormulas = false;
+  FOLTreeWalker.prototype.enterFormula = function(ctx) {
+    if (!gotTopLevelFormulas){
+      gotTopLevelFormulas = true;
       for (var i = ctx.children.length - 1; i >= 0; i--) {
-        var val = ctx.children[i].getText();
-        if (val!=='∧'){
-          conjunctionTopElements.push(val);
+        if (ctx.children[i] instanceof FormulaContext){
+          topLevelFormulas.push(ctx.children[i].getText());
         }
-      };
+      }
     }
-  }
+  };
 
   var tree = parser.formula();
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(new FOLTreeWalker(), tree);
-  return conjunctionTopElements;
+  return topLevelFormulas;
 }
 
-module.exports.getTopLevelConjuncts = getTopLevelConjuncts;
+function primeFormulaForCompare(formula) {
+  var formula = formula.replace(/ /g,'');
+  if (!(formula[0]==='¬' || formula.length===1)){
+    //TODO: check the case if already paranthesized.
+    formula = '('+formula+')';
+  }
+  return formula;
+}
+
+module.exports.getTopLevelFormulas = getTopLevelFormulas;
+module.exports.primeFormulaForCompare = primeFormulaForCompare

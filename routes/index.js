@@ -131,7 +131,7 @@ router.get('/dashboard', requireLogin, function(req,res) {
 
 router.post('/proover/new', requireLogin, function(req,res){
   var proofName = req.body.proofName.trim().replace(/\s\s+/g, ' ');
-  var proofContainer = genNewProof(req.body.proofName);
+  var proofContainer = genNewProof(proofName);
   if (proofContainer.status===false){
     //TODO use proofContainer.err to display an error message in dashboard.
     console.log(proofContainer.err);

@@ -4,6 +4,8 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   if (rule===null && annotations!=="A") {
     throw "The proof line does not have a valid Rule.";
   }
+
+  formule = formule.trim().replace(/\s\s+/g, ' ');
   var wffCheck = parser.isWFF(formule);
   if (wffCheck.status===false){
     throw "Invalid Fomule\n" + wffCheck.err.join('\n');
@@ -89,6 +91,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     throw "Invalid Rule specified: " + rule;
   }
   this.rule = rule;
+  //TODO verify that for each rule the correct number of annotations are specified.
 }
 
 function genProofLine(proofLineData) {
