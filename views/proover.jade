@@ -12,17 +12,21 @@ block append css
 block content
   div.container
     div.jumbotron
-      h2.text-center: span.label.label-primary= proofModel.proofName
+      h3.text-center: span.label.label-primary= proofModel.proofName
       button.btn.btn-lg.btn-success(type="button",
       data-toggle="modal", data-target="#newLineModal") Add New Line
       button.btn.btn-lg.btn-primary#saveProof(type="button", style="margin-left: 10px") SAVE
       -var v_st = proofModel.proofStatus;
-      if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
-        span.label.label-pill.label-success.pull-right#proofStatus: h5#ps_h(style="color:white;") SUCCESS
-      else if v_st.isProofValid && v_st.isPremiseMaintained && !v_st.isGoalAttained
-        span.label.label-pill.label-warning.pull-right#proofStatus: h5#ps_h(style="color:white;") GOAL NOT ATTAINED
-      else if !v_st.isProofValid
+      if !v_st.isProofValid
         span.label.label-pill.label-danger.pull-right#proofStatus: h5#ps_h(style="color:white;") INVALID PROOF
+      else if !v_st.isGoalAttained
+        span.label.label-pill.label-warning.pull-right#proofStatus: h5#ps_h(style="color:white;") GOAL NOT ATTAINED
+      else if !v_st.isPremiseMaintained
+        span.label.label-pill.label-info.pull-right#proofStatus: h5#ps_h(style="color:white;") MISSING PREMISE
+      else if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
+        span.label.label-pill.label-success.pull-right#proofStatus: h5#ps_h(style="color:white;") SUCCESS
+      else
+        span.label.label-pill.label-default.pull-right#proofStatus: h5#ps_h(style="color:white;") PROOF CURROPTED
       div.panel.panel-default
         table.table.proof-table#proofTable
           each line in proofModel.proofData.proofLines
@@ -31,7 +35,7 @@ block content
                 span= line.depAssumptions.join(',')
               td.vert-align
                 span (#{line.lineNo})
-              td.text-center.text-nowrap.vert-align
+              td.text-center.vert-align
                 span= line.formule
               td.text-right.vert-align
                 span= line.annotationsStr.join(',')
@@ -47,7 +51,7 @@ block content
 
   div.modal.fade#newLineModal(tabindex="-1", role="dialog",
   aria-labelledby="myModalLabel")
-    div.modal-dialog(role="document")
+    div.modal-dialog.modal-lg(role="document")
       div.modal-content
         div.modal-header
           button.close(type="button", data-dismiss="modal", aria-label="Close")
@@ -55,30 +59,32 @@ block content
           h4.modal-title#myModalLabel Add New Line
         div.modal-body
           div.form-group.new-proof-line-form
-            div.row
-              input.form-control.input-lg#depAssumptions(type='text',
-              name='depAssumptions',
-              placeholder="Enter dependent assumption seperated by comma",
-              required=true, autofocus=true)
-            div.row
-              input.form-control.input-lg#formule(type='text', name='formule',
-              placeholder="Enter formule", required=true, autofocus=true)
-            div.row
-              input.form-control.input-lg#annotation(type='text', name='annotation',
-              placeholder="Enter annotations seperated by comma",
-              required=true, autofocus=true)
-            div.row
-              div.input-group
-                input.form-control#selectedRule(type="text",
-                aria-label="selectedRule", readonly=true)
-                div.input-group-btn
-                  button.btn.btn-default.dropdown-toggle(type="button",
-                  id="dropdownMenu1", data-toggle="dropdown",
-                  aria-haspopup="true", aria-expanded="true") Rule
-                    span.caret
-                  ul.dropdown-menu.dropdown-menu-right(aria-labelledby="dropdownMenu1")
-                    each rule in ruleList
-                      li: a.proof-rule(href="#")= rule
+            div
+              div.row
+                div.col-md-2
+                  input.form-control.input-lg#depAssumptions(type='text',
+                  name='depAssumptions',
+                  placeholder="Dependecies",
+                  required=true, autofocus=true)
+                div.col-md-6
+                  input.form-control.input-lg#formule(type='text', name='formule',
+                  placeholder="Formule", required=true, autofocus=true)
+                div.col-md-2
+                  input.form-control.input-lg#annotation(type='text', name='annotation',
+                  placeholder="Annotations",
+                  required=true, autofocus=true)
+                div.col-md-2
+                  div.input-group
+                    input.form-control.input-lg#selectedRule(type="text",
+                    placeholder="Rule", aria-label="selectedRule")
+                    div.input-group-btn
+                      button.btn.btn-default.dropdown-toggle.form-control.input-lg(type="button",
+                      id="dropdownMenu1", data-toggle="dropdown",
+                      aria-haspopup="true", aria-expanded="true") Rule
+                        span.caret
+                      ul.dropdown-menu.dropdown-menu-right(aria-labelledby="dropdownMenu1")
+                        each rule in ruleList
+                          li: a.proof-rule(href="#")= rule
           div.alert.alert-danger.fade.in.hidden#errDiv
             a.close(href="#", data-hide="alert", aria-label="close") &times;
             p#errMsg

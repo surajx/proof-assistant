@@ -31,4 +31,9 @@ function addEqualsToArrayPrototype() {
     Object.defineProperty(Array.prototype, "equals", {enumerable: false});
 }
 
+function compareFormule(formule1, formule2){
+    return formule1.replace(/ /g,'')===formule2.replace(/ /g,'')
+}
+
+module.exports.compareFormule = compareFormule;
 module.exports.addEqualsToArrayPrototype = addEqualsToArrayPrototype;
