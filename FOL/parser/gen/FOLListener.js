@@ -20,48 +20,21 @@ FOLListener.prototype.exitSequent = function(ctx) {
 };
 
 
+// Enter a parse tree produced by FOLParser#wff.
+FOLListener.prototype.enterWff = function(ctx) {
+};
+
+// Exit a parse tree produced by FOLParser#wff.
+FOLListener.prototype.exitWff = function(ctx) {
+};
+
+
 // Enter a parse tree produced by FOLParser#formula.
 FOLListener.prototype.enterFormula = function(ctx) {
 };
 
 // Exit a parse tree produced by FOLParser#formula.
 FOLListener.prototype.exitFormula = function(ctx) {
-};
-
-
-// Enter a parse tree produced by FOLParser#implication.
-FOLListener.prototype.enterImplication = function(ctx) {
-};
-
-// Exit a parse tree produced by FOLParser#implication.
-FOLListener.prototype.exitImplication = function(ctx) {
-};
-
-
-// Enter a parse tree produced by FOLParser#disjunction.
-FOLListener.prototype.enterDisjunction = function(ctx) {
-};
-
-// Exit a parse tree produced by FOLParser#disjunction.
-FOLListener.prototype.exitDisjunction = function(ctx) {
-};
-
-
-// Enter a parse tree produced by FOLParser#conjunction.
-FOLListener.prototype.enterConjunction = function(ctx) {
-};
-
-// Exit a parse tree produced by FOLParser#conjunction.
-FOLListener.prototype.exitConjunction = function(ctx) {
-};
-
-
-// Enter a parse tree produced by FOLParser#negation.
-FOLListener.prototype.enterNegation = function(ctx) {
-};
-
-// Exit a parse tree produced by FOLParser#negation.
-FOLListener.prototype.exitNegation = function(ctx) {
 };
 
 

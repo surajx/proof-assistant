@@ -17,7 +17,8 @@ block append js
 
       $('#formSubmitBtn').click(function(){
         var FOLParser = require('FOLParser');
-        var wfsCheck = FOLParser.isWFS($('#proofName').val());
+        var proofName = $('#proofName').val().trim().replace(/\s\s+/g, ' ');
+        var wfsCheck = FOLParser.isWFS(proofName);
         if (wfsCheck.status){
           $('#modalForm').submit();
         } else {

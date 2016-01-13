@@ -3,7 +3,7 @@
 *
 * Ported to Antlr4 by Tom Everett
 *
-* Stripped down to PL by Suraj Narayanan
+* Stripped down to PL by Boris Repasky and Suraj Narayanan S
 *
 */
 
@@ -14,27 +14,15 @@ grammar FOL;
  *------------------------------------------------------------------*/
 
 sequent
-    : formula? (COMMA formula)* ENTL formula
+    : formula? (COMMA formula)* ENTL formula EOF
+    ;
+
+wff
+    : formula EOF
     ;
 
 formula
-    : implication
-    ;
-
-implication
-    : disjunction (IMPL disjunction)*
-    ;
-
-disjunction
-    : conjunction (OR conjunction)*
-    ;
-
-conjunction
-    : negation (AND negation)*
-    ;
-
-negation
-    : NOT? (PREPOSITION | LPAREN formula RPAREN)
+    : PREPOSITION | NOT formula | LPAREN formula AND formula RPAREN | LPAREN formula OR formula RPAREN | LPAREN formula IMPL formula RPAREN
     ;
 
 LPAREN
