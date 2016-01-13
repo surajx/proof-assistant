@@ -45,7 +45,7 @@ function addParensToSequent(proofName){
           premises[i] = addParensToFormule(premises[i].trim());
         }
       }
-      proofGoal = addParensToFormule(seqArr[1]);
+      proofGoal = addParensToFormule(seqArr[1].trim());
       return {
         status: true,
         input: premises.join(', ') + " ⊢ " + proofGoal
