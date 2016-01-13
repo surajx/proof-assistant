@@ -24,7 +24,7 @@ $(document).ready(function(){
   }
 
   function showError(err){
-    $( '#errDiv' ).removeClass( "hidden" );
+    $('#errDiv').removeClass( "hidden" );
     $('#errDiv').show();
     $('#errMsg').text(err);
   }
@@ -33,10 +33,24 @@ $(document).ready(function(){
     $( '#proofStatus' ).removeClass("label-success");
     $( '#proofStatus' ).removeClass("label-warning");
     $( '#proofStatus' ).removeClass("label-danger");
+    $( '#proofStatus' ).removeClass("label-info");
+    $( '#proofStatus' ).removeClass("label-default");
+  }
+
+  function resetModal(){
+    $("#depAssumptions").val("");
+    $("#formule").val("");
+    $("#annotation").val("");
+    $("#selectedRule").val("");
+    $('#errDiv').addClass( "hidden" );
   }
 
   $("[data-hide]").on("click", function(){
     $(this).closest("." + $(this).attr("data-hide")).hide();
+  });
+
+  $('.modal').on('shown.bs.modal', function () {
+    $(this).find('input:text:visible:first').focus();
   });
 
   $(".proof-rule").click(function() {
@@ -66,18 +80,7 @@ $(document).ready(function(){
         proof.proofLines.push(proofLineContainer.proofLine);
         try {
           var v_st = FOLValidator.validateProof(proof);
-          if (v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained){
-            $("#ps_h").text("SUCCESS");
-            removeAllLabelModifiers();
-            $( '#proofStatus' ).addClass("label-success");
-          }
-          else if(v_st.isProofValid &&
-            v_st.isPremiseMaintained && !v_st.isGoalAttained) {
-            $("#ps_h").text("GOAL NOT ATTAINED");
-            removeAllLabelModifiers();
-            $( '#proofStatus' ).addClass("label-warning");
-          }
-          else if(!v_st.isProofValid) {
+          if(!v_st.isProofValid) {
             /*
             $("#ps_h").text("INVALID PROOF");
             removeAllLabelModifiers();
@@ -85,10 +88,29 @@ $(document).ready(function(){
             */
             proof.proofLines.splice(-1,1);
             showError(v_st.err);
+          } else if(!v_st.isGoalAttained) {
+            $("#ps_h").text("GOAL NOT ATTAINED");
+            removeAllLabelModifiers();
+            $( '#proofStatus' ).addClass("label-warning");
+          } else if(!v_st.isPremiseMaintained) {
+            $("#ps_h").text("MISSING PREMISE");
+            removeAllLabelModifiers();
+            $( '#proofStatus' ).addClass("label-info");
+          } else if(v_st.isProofValid &&
+                    v_st.isPremiseMaintained &&
+                    v_st.isGoalAttained){
+            $("#ps_h").text("SUCCESS");
+            removeAllLabelModifiers();
+            $( '#proofStatus' ).addClass("label-success");
+          } else {
+            $("#ps_h").text("PROOF CURROPTED");
+            removeAllLabelModifiers();
+            $( '#proofStatus' ).addClass("label-default");
           }
           if (v_st.isProofValid) {
             addNewProofLine(proofLineContainer.proofLine);
             //TODO: Update in server by ajax
+            resetModal();
             $('#newLineModal').modal('hide');
           }
         } catch (err){
