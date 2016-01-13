@@ -7,6 +7,13 @@ function ConjunctionElimRule(){};
 //No Discharge
 ConjunctionElimRule.prototype.validate = function(proofGraph, curProofLine){
   var rulePremises = proofGraph.getAdjOf(curProofLine);
+  if(curProofLine.annotations.length!==1){
+    throw "∧E rule should have only one annotation. Given: " + curProofLine.annotationsStr.join(',');
+  }
+  if(rulePremises.length!==1) {
+    throw "∧E rule should have exactly one premises. Make sure that your \
+      annotation contains references to exactly one line-number.";
+  }
 
   var dependencyVerifyObj = dependencyVerifier(rulePremises, curProofLine);
 
@@ -17,6 +24,7 @@ ConjunctionElimRule.prototype.validate = function(proofGraph, curProofLine){
       elimination rule should not discharge."
   }
 
+  //TODO: can remove for loop since we fixed valid a length for rulePremise.
   var curFormule = primeFormulaForCompare(curProofLine.formule);
   for (var i = rulePremises.length - 1; i >= 0; i--) {
     var topLevelConjuncts =  getTopLevelFormulasForConnective(rulePremises[i].formule, "∧");

@@ -19,7 +19,10 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   this.lineNo = lineNo;
 
   this.depAssumptions = [];
-  var depAssumptionsArr = depAssumptions.split(',');
+  var depAssumptionsArr = depAssumptions.trim().split(',');
+  if (depAssumptionsArr.length===1 && depAssumptionsArr[0]===''){
+    depAssumptionsArr = [];
+  }
   for (var i = 0; i<depAssumptionsArr.length; i++) {
     var oneDependecy = depAssumptionsArr[i];
     oneDependecy = oneDependecy.replace(/ /g,'');
@@ -59,11 +62,15 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
         }
         if(parseInt(withDischarge[1])>=parseInt(this.lineNo)){
           throw "Annotation Assumption cannot be greate than or \
-            equal to current Line No: " + withDischarge[1];
+            equal to current Line No: " + this.lineNo;
         }
         if(parseInt(withDischarge[2])>=parseInt(this.lineNo)){
           throw "Discharges Assumption cannot be greate than or \
-            equal to current Line No: " + withDischarge[1];
+            equal to current Line No: " + this.lineNo;
+        }
+        if(parseInt(withDischarge[2])>=parseInt(withDischarge[1])) {
+          throw "Discharges Assumption cannot be greate than or \
+            equal to the participating annotation: " + withDischarge[1];
         }
         this.annotations.push({
           annotation: withDischarge[1],

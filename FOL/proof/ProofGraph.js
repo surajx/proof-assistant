@@ -5,9 +5,14 @@ function ProofGraph(proofLines) {
   for (var i = proofLines.length; i-- > 0;){
     var adjProofLines = [];
     for (var j = 0; j<proofLines[i].annotations.length; j++) {
-      var annotation = proofLines[i].annotations[j];
-      if (annotation.annotation!=="A")
-        adjProofLines.push(proofLines[annotation.annotation-1]);
+      var annotationContainer = proofLines[i].annotations[j];
+      if (annotationContainer.annotation!=="A") {
+        adjProofLines.push(proofLines[annotationContainer.annotation-1]);
+        if (annotationContainer.discharge!==null &&
+            annotationContainer.discharge!==''){
+          adjProofLines.push(proofLines[annotationContainer.discharge-1]);
+        }
+      }
     };
     this.AdjList.set(proofLines[i], adjProofLines);
   }

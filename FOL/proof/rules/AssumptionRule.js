@@ -2,8 +2,12 @@ function AssumptionRule(){};
 
 AssumptionRule.prototype.validate = function(proofGraph, curProofLine){
   var depAssumptions = curProofLine.depAssumptions;
-  if (depAssumptions.length!=1) return false;
-  if (depAssumptions[0]!=curProofLine.lineNo) return false;
+  if (depAssumptions.length!=1) {
+    throw "An asusmtption rule should have only one dependency, itself!"
+  }
+  if (depAssumptions[0]!=curProofLine.lineNo) {
+    throw "An asusmtption rule's dependency should be same as its own line number."
+  }
   return true;
 }
 
