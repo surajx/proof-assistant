@@ -1,5 +1,5 @@
 var dependencyVerifier = require('./dependencyVerifier.js').dependencyVerifier;
-var getTopLevelFormulas = require('./ruleUtil.js').getTopLevelFormulas;
+var getTopLevelFormulasForConnective = require('./ruleUtil.js').getTopLevelFormulasForConnective;
 var primeFormulaForCompare = require('./ruleUtil.js').primeFormulaForCompare;
 
 function ConjunctionIntroRule(){};
@@ -17,7 +17,11 @@ ConjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
       introduction rule should not discharge."
   }
 
-  var topLevelConjuncts =  getTopLevelFormulas(curProofLine.formule);
+  var topLevelConjuncts =  getTopLevelFormulasForConnective(curProofLine.formule, "∧");
+  if (topLevelConjuncts.length===0) {
+    throw "Could not find a top level conjunction for the given formule, check your \
+    formule and make sure that an ∧ symbol is the outermost logical connective."
+  }
   for (var i = rulePremises.length - 1; i >= 0; i--) {
     var tmpFormule = primeFormulaForCompare(rulePremises[i].formule);
     if (topLevelConjuncts.indexOf(tmpFormule)<0){
