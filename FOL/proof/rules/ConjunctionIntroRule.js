@@ -7,6 +7,13 @@ function ConjunctionIntroRule(){};
 //No Discharge
 ConjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
   var rulePremises = proofGraph.getAdjOf(curProofLine);
+  if(curProofLine.annotations.length!==2) {
+    throw "∧E rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
+  }
+  if(rulePremises.length!==2) {
+    throw "∧I rule should have exactly two premises. Make sure that your \
+      annotation contains references to exactly two line-numbers.";
+  }
 
   var dependencyVerifyObj = dependencyVerifier(rulePremises, curProofLine);
 
