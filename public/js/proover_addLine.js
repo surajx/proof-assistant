@@ -24,6 +24,7 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
 
     $(".edt-btn").unbind();
     $(".edt-btn").click(function(){
+      $('#errDiv').addClass( "hidden" );
       ns_proover.launchModelForLno($(this).find(".hidden-lno").text());
     });
 }
@@ -80,6 +81,7 @@ ns_proover.updateUIProofStatus = function(v_st){
 ns_proover.addNewLineListener = function(){
 
   $("#addNewLineBtn").click(function(){
+    $('#myModalLabel').text("Add New Line");
     $('#lineSaveBtn').addClass("hidden");
     $('#lineSubmitBtn').removeClass("hidden");
     ns_proover.resetModal();
