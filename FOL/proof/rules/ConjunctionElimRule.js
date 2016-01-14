@@ -6,21 +6,23 @@ function ConjunctionElimRule(){};
 
 //No Discharge
 ConjunctionElimRule.prototype.validate = function(proofGraph, curProofLine){
+  var lnoErrStr = "[line: "+curProofLine.lineNo+"]: "
   var rulePremises = proofGraph.getAdjOf(curProofLine);
   if(curProofLine.annotations.length!==1){
-    throw "∧E rule should have only one annotation. Given: " + curProofLine.annotationsStr.join(',');
+    throw lnoErrStr + "∧E rule should have only one annotation. Given: " +
+      curProofLine.annotationsStr.join(',');
   }
   if(rulePremises.length!==1) {
-    throw "∧E rule should have exactly one premises. Make sure that your \
+    throw lnoErrStr + "∧E rule should have exactly one premises. Make sure that your \
       annotation contains references to exactly one line-number.";
   }
 
   var dependencyVerifyObj = dependencyVerifier(rulePremises, curProofLine);
 
   if (!dependencyVerifyObj.status){
-    throw dependencyVerifyObj.err;
+    throw lnoErrStr + dependencyVerifyObj.err;
   } else if(dependencyVerifyObj.discharged){
-    throw "Discharge specified, but conjunction \
+    throw lnoErrStr + "Discharge specified, but conjunction \
       elimination rule should not discharge."
   }
 
@@ -29,16 +31,16 @@ ConjunctionElimRule.prototype.validate = function(proofGraph, curProofLine){
   for (var i = rulePremises.length - 1; i >= 0; i--) {
     var topLevelConjuncts =  getTopLevelFormulasForConnective(rulePremises[i].formule, "∧");
     if (topLevelConjuncts.length===0) {
-      throw "Could not find a top level conjunction for the premise formule, "+
-      rulePremises[i].formule + ". Check the formule and make sure that an ∧ symbol \
-      is the outermost logical connective."
+      throw lnoErrStr + "Could not find a top level conjunction for the premise \
+      formule, " + rulePremises[i].formule + ". Check the formule and make sure \
+      that an ∧ symbol is the outermost logical connective."
     }
     for (var j = topLevelConjuncts.length - 1; j >= 0; j--) {
       var oneTopLevelConjunct = topLevelConjuncts[j].replace(/ /g,'');
       if (curFormule===oneTopLevelConjunct) return true;
     }
   }
-  throw "Formule not derived from a top \
+  throw lnoErrStr + "Formule not derived from a top \
     level conjunct specified in the rule annotations."
 }
 
