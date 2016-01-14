@@ -2,8 +2,10 @@ if (ns_proover===undefined) var ns_proover={};
 
 ns_proover.addProofLine = function (proofLine, updateLineNo) {
   var dispRule = proofLine.rule==="A"?"":proofLine.rule;
-  $('#proofTable').append('<tr class= "proof-line" \
-    id="line_'+proofLine.lineNo+'"></tr>');
+  if(updateLineNo===undefined){
+    $('#proofTable').append('<tr class= "proof-line" \
+      id="line_'+proofLine.lineNo+'"></tr>');
+  }
   $('#line_'+proofLine.lineNo).html(
     "<td class='vert-align'><span>"+ proofLine.depAssumptions.join(',') +" \
       </span></td> \
@@ -26,8 +28,53 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
     });
 }
 
-ns_proover.genProofLineForLno = function(){
+ns_proover.genProofLineForLno = function(givenLineNo){
+  var depAssumptions = $("#depAssumptions").val();
+  var formule = $("#formule").val().trim().replace(/\s\s+/g, ' ');
+  var annotation = $("#annotation").val();
+  var selectedRule = $("#selectedRule").val();
+  var lineNo = givenLineNo
+  var FOLParser = require('FOLParser');
+  var wffCheck = FOLParser.isWFF(formule);
+  if (!wffCheck.status){
+    ns_proover.showError(wffCheck.err);
+    return false;
+  }
+  var FOLProofLine = require('FOLProofLine');
+  var proofLineContainer = FOLProofLine.genProofLine({
+    depAssumptions : depAssumptions,
+    lineNo         : lineNo,
+    formule        : formule,
+    annotation     : annotation,
+    rule           : selectedRule
+  });
+  if (proofLineContainer.status!==true) {
+    ns_proover.showError(proofLineContainer.err);
+    return false;
+  }
+  return proofLineContainer.proofLine;
+}
 
+ns_proover.updateUIProofStatus = function(v_st){
+  if(!v_st.isGoalAttained) {
+    $("#ps_h").text("GOAL NOT ATTAINED");
+    ns_proover.removeAllLabelModifiers();
+    $( '#proofStatus' ).addClass("label-warning");
+  } else if(!v_st.isPremiseMaintained) {
+    $("#ps_h").text("MISSING PREMISE");
+    ns_proover.removeAllLabelModifiers();
+    $( '#proofStatus' ).addClass("label-info");
+  } else if(v_st.isProofValid &&
+            v_st.isPremiseMaintained &&
+            v_st.isGoalAttained){
+    $("#ps_h").text("SUCCESS");
+    ns_proover.removeAllLabelModifiers();
+    $( '#proofStatus' ).addClass("label-success");
+  } else {
+    $("#ps_h").text("PROOF CURROPTED");
+    ns_proover.removeAllLabelModifiers();
+    $( '#proofStatus' ).addClass("label-default");
+  }
 }
 
 ns_proover.addNewLineListener = function(){
@@ -39,32 +86,11 @@ ns_proover.addNewLineListener = function(){
   });
 
   $("#lineSubmitBtn").click(function(){
-    var depAssumptions = $("#depAssumptions").val();
-    var formule = $("#formule").val().trim().replace(/\s\s+/g, ' ');
-    var annotation = $("#annotation").val();
-    var selectedRule = $("#selectedRule").val();
     var curLineNo = parseInt($('#proofTable tr:last').find('.hidden-lno').text());
     if (isNaN(curLineNo)) curLineNo = 0;
-    var lineNo = (curLineNo+1).toString();
-    var FOLParser = require('FOLParser');
-    var wffCheck = FOLParser.isWFF(formule);
-    if (!wffCheck.status){
-      ns_proover.showError(wffCheck.err);
-      return;
-    }
-    var FOLProofLine = require('FOLProofLine');
-    var proofLineContainer = FOLProofLine.genProofLine({
-      depAssumptions : depAssumptions,
-      lineNo         : lineNo,
-      formule        : formule,
-      annotation     : annotation,
-      rule           : selectedRule
-    });
-    if (proofLineContainer.status!==true) {
-      ns_proover.showError(proofLineContainer.err);
-      return;
-    }
-    proof.proofLines.push(proofLineContainer.proofLine);
+    var proofLine = ns_proover.genProofLineForLno((curLineNo+1).toString());
+    if (proofLine===false) return;
+    proof.proofLines.push(proofLine);
     try {
       var FOLValidator = require('FOLValidator');
       var v_st = FOLValidator.validateProof(proof);
@@ -77,27 +103,11 @@ ns_proover.addNewLineListener = function(){
         */
         proof.proofLines.splice(-1,1);
         ns_proover.showError(v_st.err);
-      } else if(!v_st.isGoalAttained) {
-        $("#ps_h").text("GOAL NOT ATTAINED");
-        ns_proover.removeAllLabelModifiers();
-        $( '#proofStatus' ).addClass("label-warning");
-      } else if(!v_st.isPremiseMaintained) {
-        $("#ps_h").text("MISSING PREMISE");
-        ns_proover.removeAllLabelModifiers();
-        $( '#proofStatus' ).addClass("label-info");
-      } else if(v_st.isProofValid &&
-                v_st.isPremiseMaintained &&
-                v_st.isGoalAttained){
-        $("#ps_h").text("SUCCESS");
-        ns_proover.removeAllLabelModifiers();
-        $( '#proofStatus' ).addClass("label-success");
       } else {
-        $("#ps_h").text("PROOF CURROPTED");
-        ns_proover.removeAllLabelModifiers();
-        $( '#proofStatus' ).addClass("label-default");
+        ns_proover.updateUIProofStatus(v_st);
       }
       if (v_st.isProofValid) {
-        ns_proover.addProofLine(proofLineContainer.proofLine);
+        ns_proover.addProofLine(proofLine);
         //TODO: Update in server by ajax
         ns_proover.resetModal();
         $('#newLineModal').modal('hide');
