@@ -2,6 +2,7 @@ extend layout
 
 block append js
   script(src="/js/parserBundle.js")
+  script(src="/js/commandsToUnicode.js")
   script(type='text/javascript').
     $(document).ready(function(){
 
@@ -14,6 +15,19 @@ block append js
         ($(this).val() === "") ? isDisabled=true : isDisabled=false;
         $("#formSubmitBtn").prop("disabled", isDisabled);
       });
+      
+      $("#proofName").on("input propertychange paste",function(){
+         var proofName = $(this).val();
+         var prevCaretPos = this.selectionStart;
+         var origProofNameLen = proofName.length;
+         proofName = commandsToUnicode(proofName);
+         curCaretOffset = origProofNameLen - proofName.length;
+           if (curCaretOffset > 0){
+             $(this).val(proofName);
+             this.setSelectionRange(prevCaretPos-curCaretOffset, prevCaretPos-curCaretOffset);
+             }
+      });
+
 
       $('#formSubmitBtn').click(function(){
         var FOLParser = require('FOLParser');
