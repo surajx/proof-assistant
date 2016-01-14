@@ -5,7 +5,7 @@ var FormulaContext  = require('../../parser/gen/FOLParser.js').FormulaContext;
 var getParserForFormule  = require('../../parser/parser.js').getParserForFormule;
 
 
-function getTopLevelFormulas(input) {
+function getTopLevelFormulasForConnective(input, connective) {
   //At this point input is validated to be a WFF.
   var parser = getParserForFormule(input);
   var topLevelFormulas = [];
@@ -15,10 +15,18 @@ function getTopLevelFormulas(input) {
   FOLTreeWalker.prototype.enterFormula = function(ctx) {
     if (!gotTopLevelFormulas){
       gotTopLevelFormulas = true;
-      for (var i = ctx.children.length - 1; i >= 0; i--) {
+      var foundConnective = false;
+      var childrenLen = ctx.children.length;
+      for (var i = 0; i<childrenLen ; i++) {
         if (ctx.children[i] instanceof FormulaContext){
           topLevelFormulas.push(ctx.children[i].getText());
         }
+        if (ctx.children[i].getText()===connective){
+          foundConnective = true;
+        }
+      }
+      if (!foundConnective){
+        topLevelFormulas = [];
       }
     }
   };
@@ -37,5 +45,5 @@ function primeFormulaForCompare(formula) {
   return formula;
 }
 
-module.exports.getTopLevelFormulas = getTopLevelFormulas;
+module.exports.getTopLevelFormulasForConnective = getTopLevelFormulasForConnective;
 module.exports.primeFormulaForCompare = primeFormulaForCompare

@@ -3,6 +3,7 @@ var genProofLine = require('./ProofLine.js').genProofLine;
 var ProofGraph = require('./ProofGraph.js');
 var FOLParser = require('../parser/parser.js');
 var AssumptionRule = require('./rules/AssumptionRule.js');
+var compareFormule = require('../../util/util.js').compareFormule;
 var addEqualsToArrayPrototype = require('../../util/util.js').addEqualsToArrayPrototype;
 
 function Proof(premises, goal) {
@@ -13,11 +14,11 @@ function Proof(premises, goal) {
 
 function validateProof(proof) {
   var prfLineLen = proof.proofLines.length;
-  var goal = proof.goal.replace(/ /g,'');
+  var goal = proof.goal;
   var isProofValid = true;
   if (prfLineLen>0) {
     var proofGraph = new ProofGraph(proof.proofLines);
-    var lastProoLineFormule = proof.proofLines[prfLineLen-1].formule.replace(/ /g,'');
+    var lastProoLineFormule = proof.proofLines[prfLineLen-1].formule;
 
     //Checking that the last line is derived using a graph data structure.
     try {
@@ -33,17 +34,28 @@ function validateProof(proof) {
 
   var isPremiseMaintained = true;
   var premiseDepAssumptions = [];
+  premiseLoop:
   for(var i=0; i<proof.premises.length;i++){
-    premiseDepAssumptions = premiseDepAssumptions.concat(proof.proofLines[i].depAssumptions);
-    isPremiseMaintained = isPremiseMaintained && (proof.premises[i].replace(/ /g,'')===
-      proof.proofLines[i].formule.replace(/ /g,''));
+    for (var j = 0; j<proof.proofLines.length; j++) {
+      if(compareFormule(proof.premises[i],proof.proofLines[j].formule)) {
+        if(proof.proofLines[j].rule==="A") {
+          premiseDepAssumptions.push(proof.proofLines[j].depAssumptions[0]);
+          continue premiseLoop;
+        }
+      }
+    }
+    isPremiseMaintained = false;
   }
 
-  var isGoalAttained = goal===lastProoLineFormule;
+  var isGoalAttained = compareFormule(goal,lastProoLineFormule);
   if (isGoalAttained) {
-    if (Array.prototype.equals===undefined) addEqualsToArrayPrototype();
-    if(!proof.proofLines[prfLineLen-1].depAssumptions.equals(premiseDepAssumptions))
-      isGoalAttained = false;
+    var lastLineDepAssumptions = proof.proofLines[prfLineLen-1].depAssumptions;
+    for (var i = lastLineDepAssumptions.length - 1; i >= 0; i--) {
+      if (premiseDepAssumptions.indexOf(lastLineDepAssumptions[i])<0) {
+        isGoalAttained = false;
+        break;
+      }
+    };
   }
   return {
     isProofValid       : isProofValid,
@@ -125,4 +137,3 @@ function genNewProof(proofName){
 module.exports.validateProof = validateProof;
 module.exports.Proof = Proof;
 module.exports.genNewProof = genNewProof;
-module.exports.genProofLine = genProofLine;

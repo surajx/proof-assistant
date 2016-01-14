@@ -30,6 +30,7 @@ gulp.task('browserify', function() {
   var bundleStream = browserify()
     .require('./FOL/parser/parser.js', {expose: 'FOLParser'})
     .require('./FOL/proof/Proof.js', {expose: 'FOLValidator'})
+    .require('./FOL/proof/ProofLine.js', {expose: 'FOLProofLine'})
     .bundle();
 
   bundleStream
