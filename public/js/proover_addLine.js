@@ -11,7 +11,7 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
       </span></td> \
     <td class='vert-align'><span>("+ proofLine.lineNo +") \
       </span></td> \
-    <td class='text-center text-nowrap vert-align'><span>"+ proofLine.formule +" \
+    <td class='text-center vert-align'><span>"+ proofLine.formule +" \
       </span></td> \
     <td class='text-right vert-align'><span>"+ proofLine.annotationsStr.join(',') +" \
       </span></td> \
