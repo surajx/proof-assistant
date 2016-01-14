@@ -12,7 +12,7 @@ ns_proover.launchModelForLno = function(line){
   $("#selectedRule").val(lineArray[4]);
 
   $("#modelLineNo").text(line);
-  $('#myModalLabel').text("Edit Line");
+  $('#myModalLabel').text("Edit Line: " + line);
   $('#lineSaveBtn').removeClass("hidden");
   $('#lineSubmitBtn').addClass("hidden");
   $('#newLineModal').modal('show');

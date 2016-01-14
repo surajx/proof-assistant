@@ -57,14 +57,14 @@ ns_proover.genProofLineForLno = function(givenLineNo){
 }
 
 ns_proover.updateUIProofStatus = function(v_st){
-  if(!v_st.isGoalAttained) {
-    $("#ps_h").text("GOAL NOT ATTAINED");
-    ns_proover.removeAllLabelModifiers();
-    $( '#proofStatus' ).addClass("label-warning");
-  } else if(!v_st.isPremiseMaintained) {
+  if(!v_st.isPremiseMaintained) {
     $("#ps_h").text("MISSING PREMISE");
     ns_proover.removeAllLabelModifiers();
     $( '#proofStatus' ).addClass("label-info");
+  } else if(!v_st.isGoalAttained) {
+    $("#ps_h").text("GOAL NOT ATTAINED");
+    ns_proover.removeAllLabelModifiers();
+    $( '#proofStatus' ).addClass("label-warning");
   } else if(v_st.isProofValid &&
             v_st.isPremiseMaintained &&
             v_st.isGoalAttained){
@@ -81,7 +81,9 @@ ns_proover.updateUIProofStatus = function(v_st){
 ns_proover.addNewLineListener = function(){
 
   $("#addNewLineBtn").click(function(){
-    $('#myModalLabel').text("Add New Line");
+    var curLineNo = parseInt($('#proofTable tr:last').find('.hidden-lno').text());
+    if (isNaN(curLineNo)) curLineNo = 0;
+    $('#myModalLabel').text("Add New Line: " + (curLineNo+1).toString());
     $('#lineSaveBtn').addClass("hidden");
     $('#lineSubmitBtn').removeClass("hidden");
     ns_proover.resetModal();
@@ -96,6 +98,7 @@ ns_proover.addNewLineListener = function(){
     try {
       var FOLValidator = require('FOLValidator');
       var v_st = FOLValidator.validateProof(proof);
+      console.log(v_st);
       if(!v_st.isProofValid) {
         /*
         //Not allowing users to add proof lines that invalidate the proof.

@@ -22,10 +22,10 @@ block content
       -var v_st = proofModel.proofStatus;
       if !v_st.isProofValid
         span.label.label-pill.label-danger.pull-right#proofStatus: h5#ps_h(style="color:white;") INVALID PROOF
-      else if !v_st.isGoalAttained
-        span.label.label-pill.label-warning.pull-right#proofStatus: h5#ps_h(style="color:white;") GOAL NOT ATTAINED
       else if !v_st.isPremiseMaintained
         span.label.label-pill.label-info.pull-right#proofStatus: h5#ps_h(style="color:white;") MISSING PREMISE
+      else if !v_st.isGoalAttained
+        span.label.label-pill.label-warning.pull-right#proofStatus: h5#ps_h(style="color:white;") GOAL NOT ATTAINED
       else if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
         span.label.label-pill.label-success.pull-right#proofStatus: h5#ps_h(style="color:white;") SUCCESS
       else

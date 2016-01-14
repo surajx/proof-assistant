@@ -4,9 +4,6 @@ $(document).ready(function(){
 
   //Debug info
   console.log(proof);
-  $("#proofTable").on("change", function(){
-    console.log(proof);
-  })
 
   ns_proover.addMiscListeners();
   ns_proover.addNewLineListener();
