@@ -5,20 +5,21 @@ var getTopLevelFormulasForConnective = require('./ruleUtil.js').getTopLevelFormu
 function ImplicationElimRule(){};
 
 ImplicationElimRule.prototype.validate = function(proofGraph, curProofLine) {
+  var lnoErrStr = "[line: "+curProofLine.lineNo+"]: "
   var rulePremises = proofGraph.getAdjOf(curProofLine);
   if(curProofLine.annotations.length!==2){
-    throw "→E rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
+    throw lnoErrStr + "→E rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
   }
   if(rulePremises.length!==2) {
-    throw "→E rule should have exactly two premises. Make sure that your \
+    throw lnoErrStr + "→E rule should have exactly two premises. Make sure that your \
       annotation contains reference to exactly two line-numbers.";
   }
   var dependencyVerifyObj = dependencyVerifier(rulePremises, curProofLine);
 
   if (!dependencyVerifyObj.status){
-    throw dependencyVerifyObj.err;
+    throw lnoErrStr + dependencyVerifyObj.err;
   } else if(dependencyVerifyObj.discharged){
-    throw "Discharge specified, but implication \
+    throw lnoErrStr + "Discharge specified, but implication \
       elimination rule should not discharge."
   }
 
@@ -40,7 +41,7 @@ ImplicationElimRule.prototype.validate = function(proofGraph, curProofLine) {
       isAtecedentOf(rulePremises2, rulePremises1, curProofLine.formule)) {
     return true;
   } else {
-    throw "The premises provided by the annotation does not entail, " +
+    throw lnoErrStr + "The premises provided by the annotation does not entail, " +
     curProofLine.formule + " by Implication Introduction rule.";
   }
 }

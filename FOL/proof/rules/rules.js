@@ -15,14 +15,14 @@ module.exports = {
     "A"  : new AssumptionRule(),
     "∧E" : new ConjunctionElimRule(),
     "∧I" : new ConjunctionIntroRule(),
-    "∨E" : new DisjunctionElimRule(),
-    "∨I" : new DisjunctionIntroRule(),
+//    "∨E" : new DisjunctionElimRule(),
+//    "∨I" : new DisjunctionIntroRule(),
     "→E" : new ImplicationElimRule(),
     "→I" : new ImplicationIntroRule(),
-    "RAA": new ReductioAdAbsurdumRule(),
-    "¬¬E": new DoubleNegationElimRule(),
-    "¬¬I": new DoubleNegationIntroRule(),
-    "¬E" : new NegationElimRule(),
-    "¬I" : new NegationIntroRule()
+//    "RAA": new ReductioAdAbsurdumRule(),
+//    "¬¬E": new DoubleNegationElimRule(),
+//    "¬¬I": new DoubleNegationIntroRule(),
+//    "¬E" : new NegationElimRule(),
+//    "¬I" : new NegationIntroRule()
 }
 
