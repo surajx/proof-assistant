@@ -122,4 +122,3 @@ function genProofLine(proofLineData) {
 }
 
 module.exports.genProofLine = genProofLine;
-module.exports.ProofLine = ProofLine;

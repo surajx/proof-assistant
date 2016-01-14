@@ -4,6 +4,9 @@ block append js
   script(src="/js/parserBundle.js")
   script(type="text/javascript").
     var proofModel = !{JSON.stringify(proofModel)}
+  script(src="/js/proover_util.js")
+  script(src="/js/proover_addLine.js")
+  script(src="/js/proover_editLine.js")
   script(src="/js/proover.js")
 
 block append css
@@ -13,7 +16,7 @@ block content
   div.container
     div.jumbotron
       h3.text-center: span.label.label-primary= proofModel.proofName
-      button.btn.btn-lg.btn-success(type="button",
+      button.btn.btn-lg.btn-success#addNewLineBtn(type="button",
       data-toggle="modal", data-target="#newLineModal") Add New Line
       button.btn.btn-lg.btn-primary#saveProof(type="button", style="margin-left: 10px") SAVE
       -var v_st = proofModel.proofStatus;
@@ -45,9 +48,9 @@ block content
                 else
                   span= line.rule
               td.text-right.vert-align
-                button.btn.btn-default(type="button", id="edt_btn_#{line.lineNo}")
+                button.btn.btn-default.edt-btn(type="button", id="edt_btn_#{line.lineNo}")
                   span.glyphicon.glyphicon-edit
-                span.hidden #{line.lineNo}
+                  span.hidden.hidden-lno #{line.lineNo}
 
   div.modal.fade#newLineModal(tabindex="-1", role="dialog",
   aria-labelledby="myModalLabel")
@@ -91,3 +94,4 @@ block content
         div.modal-footer
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
           button.btn.btn-primary#lineSubmitBtn(type="button") Create
+          button.btn.btn-primary.hidden#lineSaveBtn(type="button") Save

@@ -137,4 +137,3 @@ function genNewProof(proofName){
 module.exports.validateProof = validateProof;
 module.exports.Proof = Proof;
 module.exports.genNewProof = genNewProof;
-module.exports.genProofLine = genProofLine;
