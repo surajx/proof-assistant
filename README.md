@@ -13,9 +13,10 @@ about optimizations.
 * The following commands in the terminal(command prompt)
   - `npm install -g gulp`
   - `npm install -g nodemon`
-  - `npm install -g browserify`
+  - `npm install -g bower
 * Navigate into the cloned repository and run the following command
-  - `npm install`
+  - `npm install
+  - `bower install`
 * Make sure that you are in the repository root and run the following command
   - `gulp`
 * Launch a browser and navigate to `localhost:3000` you should be 
