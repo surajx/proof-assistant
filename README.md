@@ -15,7 +15,7 @@ about optimizations.
   - `npm install -g nodemon`
   - `npm install -g bower
 * Navigate into the cloned repository and run the following command
-  - `npm install
+  - `npm install`
   - `bower install`
 * Make sure that you are in the repository root and run the following command
   - `gulp`
