@@ -13,7 +13,7 @@ about optimizations.
 * The following commands in the terminal(command prompt)
   - `npm install -g gulp`
   - `npm install -g nodemon`
-  - `npm install -g bower
+  - `npm install -g bower`
 * Navigate into the cloned repository and run the following command
   - `npm install`
   - `bower install`
