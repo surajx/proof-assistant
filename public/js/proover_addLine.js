@@ -27,6 +27,9 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
       $('#errDiv').addClass( "hidden" );
       ns_proover.launchModelForLno($(this).find(".hidden-lno").text());
     });
+
+    $("#saveProofBtn").removeClass("btn-success");
+    $("#saveProofBtn").addClass("btn-danger");
 }
 
 ns_proover.genProofLineForLno = function(givenLineNo){

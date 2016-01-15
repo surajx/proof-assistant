@@ -8,8 +8,7 @@ function ProofGraph(proofLines) {
       var annotationContainer = proofLines[i].annotations[j];
       if (annotationContainer.annotation!=="A") {
         adjProofLines.push(proofLines[annotationContainer.annotation-1]);
-        if (annotationContainer.discharge!==null &&
-            annotationContainer.discharge!==''){
+        if (annotationContainer.discharge!==''){
           adjProofLines.push(proofLines[annotationContainer.discharge-1]);
         }
       }

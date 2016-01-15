@@ -1,7 +1,7 @@
 var parser = require('../parser/parser.js');
 
 function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
-  if (rule===null && annotations!=="A") {
+  if (rule==='' && annotations!=="A") {
     throw "The proof line does not have a valid Rule.";
   }
 
@@ -46,7 +46,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     annotations = "A";
     this.annotations.push({
       annotation: annotations,
-      discharge : null
+      discharge : ''
     });
     this.annotationsStr.push(annotations);
   } else {
@@ -84,7 +84,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
         }
         this.annotations.push({
           annotation: oneAnnotation,
-          discharge : null
+          discharge : ''
         });
         this.annotationsStr.push(oneAnnotation);
       } else {
