@@ -1,7 +1,7 @@
 // Replaces text in forms with the corresponding unicode symbols adjusts caret offset.
 function dynamicTextFormInput() {
     
-	var formInput = $(this).val();
+    var formInput = $(this).val();
     var prevCaretPos = this.selectionStart;
     var origProofNameLen = formInput.length;
     formInput = commandsToUnicode(formInput);
