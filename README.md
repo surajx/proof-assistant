@@ -10,11 +10,11 @@ about optimizations.
 [mongodb](https://www.mongodb.org/downloads#production)
 * Open a new terminal and Clone the repository from CECS GitLab
   - `git@gitlab.cecs.anu.edu.au:surajx/proof-assistant.git`
-* The following commands in the terminal(command prompt)
+* Run the following commands in the terminal(command prompt)
   - `npm install -g gulp`
   - `npm install -g nodemon`
   - `npm install -g bower`
-* Navigate into the cloned repository and run the following command
+* Navigate into the cloned repository directory and run the following commands
   - `npm install`
   - `bower install`
 * Make sure that you are in the repository root and run the following command
@@ -27,7 +27,7 @@ seeing a login page.
 > To minimize setup overhead and to still adhere to a fair amount of SCM 
 etiquettes, I propose the following dev work-flow.
 
-* Do Not push code directly to master branch.
+* Do NOT push code directly to `master` branch.
 * Developers should checkout a new git branch for each feature implmentation 
 and push the branch to the repository
   - first make sure youre in master branch using this command: `git status`
