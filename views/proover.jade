@@ -1,6 +1,7 @@
 extend layout
 
 block append js
+  script(src="/js/commandsToUnicode.js")
   script(src="/js/parserBundle.js")
   script(type="text/javascript").
     var proofModel = !{JSON.stringify(proofModel)}

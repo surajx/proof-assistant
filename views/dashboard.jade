@@ -5,7 +5,7 @@ block append js
   script(src="/js/commandsToUnicode.js")
   script(type='text/javascript').
     $(document).ready(function(){
-
+      
       $("[data-hide]").on("click", function(){
         $(this).closest("." + $(this).attr("data-hide")).hide();
       });
@@ -16,19 +16,10 @@ block append js
         $("#formSubmitBtn").prop("disabled", isDisabled);
       });
       
-      $("#proofName").on("input propertychange paste",function(){
-         var proofName = $(this).val();
-         var prevCaretPos = this.selectionStart;
-         var origProofNameLen = proofName.length;
-         proofName = commandsToUnicode(proofName);
-         curCaretOffset = origProofNameLen - proofName.length;
-           if (curCaretOffset > 0){
-             $(this).val(proofName);
-             this.setSelectionRange(prevCaretPos-curCaretOffset, prevCaretPos-curCaretOffset);
-             }
+      $("#proofName").on("input propertychange paste", function(){
+        dynamicTextFormInput.call(this)
       });
-
-
+      
       $('#formSubmitBtn').click(function(){
         var FOLParser = require('FOLParser');
         var proofName = $('#proofName').val().trim().replace(/\s\s+/g, ' ');
