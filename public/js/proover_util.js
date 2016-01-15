@@ -34,4 +34,12 @@ ns_proover.addMiscListeners = function(){
   $(".proof-rule").click(function() {
     $("#selectedRule").val($(this).text());
   });
+  
+  $("#formule").on("input propertychange paste", function(){
+    dynamicTextFormInput.call(this)
+  });
+  
+  $("#selectedRule").on("input propertychange paste", function(){
+    dynamicTextFormInput.call(this)
+  });
 }
