@@ -1,4 +1,18 @@
 // replace LaTex with unicode
+
+function dynamicTextFormInput() {
+		 var formInput = $(this).val();
+         var prevCaretPos = this.selectionStart;
+         var origProofNameLen = formInput.length;
+         formInput = commandsToUnicode(formInput);
+         curCaretOffset = origProofNameLen - formInput.length;
+           if (curCaretOffset > 0){
+             $(this).val(formInput);
+             this.setSelectionRange(prevCaretPos-curCaretOffset, prevCaretPos-curCaretOffset);
+             }
+
+}
+
 function commandsToUnicode(formInput) {
     
     formInput = formInput
