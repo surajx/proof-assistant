@@ -4,8 +4,7 @@ var addEqualsToArrayPrototype = require('../../../util/util.js').addEqualsToArra
 function dischargeVerifier(rulePremises, curProofLine){
   var curAnnotations = curProofLine.annotations;
   for (var i = curAnnotations.length - 1; i >= 0; i--) {
-    if(curAnnotations[i].discharge===null ||
-      curAnnotations[i].discharge==='') continue;
+    if(curAnnotations[i].discharge==='') continue;
     for (var j = rulePremises.length - 1; j >= 0; j--) {
       if (rulePremises[j].lineNo===curAnnotations[i].annotation){
         if (rulePremises[j].depAssumptions.indexOf(curAnnotations[i].discharge)<0){
@@ -29,8 +28,7 @@ function createDischargeArray (curProofLine) {
     var annotations = curProofLine.annotations;
     var dischargeArray = [];
     for (var i = annotations.length - 1; i >= 0; i--) {
-        if (annotations[i].discharge!==null &&
-            annotations[i].discharge!=='') {
+        if (annotations[i].discharge!=='') {
             dischargeArray.push(annotations[i].discharge);
         }
     };
@@ -86,7 +84,7 @@ function dependencyVerifier(rulePremises, curProofLine){
     }
   return {
     status: false,
-    err: "Assumptions of the rule premises to not tally with the\
+    err: "Assumptions of the rule premises do not tally with the\
         dependent assumptions provided."
   }
 }

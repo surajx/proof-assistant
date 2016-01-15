@@ -13,6 +13,8 @@ function Proof(premises, goal) {
 }
 
 function validateProof(proof) {
+  //TODO: check if some malicious data can throw DFS_VALIDATE into
+  //a infinite recursive loop.
   var prfLineLen = proof.proofLines.length;
   var goal = proof.goal;
   var isProofValid = true;
@@ -103,7 +105,7 @@ function genNewProof(proofName){
           lineNo         : (i+1).toString(),
           formule        : premises[i],
           annotation     : "A",
-          rule           : null
+          rule           : ""
         });
         if (proofLine.status===true){
           proofLines.push(proofLine.proofLine);
@@ -135,5 +137,4 @@ function genNewProof(proofName){
 }
 
 module.exports.validateProof = validateProof;
-module.exports.Proof = Proof;
 module.exports.genNewProof = genNewProof;

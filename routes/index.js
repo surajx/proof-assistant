@@ -5,6 +5,7 @@ var User = require('../models/User.js');
 var ProofModel = require('../models/Proof.js');
 
 var genNewProof = require('../FOL/proof/Proof.js').genNewProof;
+var validateProof = require('../FOL/proof/Proof.js').validateProof;
 var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
 /* TODO:
@@ -156,16 +157,29 @@ router.post('/proover/new', requireLogin, function(req,res){
 });
 
 router.get('/proover/:id', requireLogin, function(req,res){
-  //TODO: Fetch the corresponding proof and save it in locals.
-  //TODO: if id is not avaiable send 404.
-  //TODO: make sure the same logged in user is fetching his proof.
-  ProofModel.findOne({_id:req.params.id}, function(err, proof){
+  ProofModel.findOne({_id:req.params.id, userid:req.user.id}, function(err, proof){
     if (err || !proof) {
       res.redirect('/dashboard');
     } else {
       var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
       res.render('proover', {proofModel: proof, ruleList: ruleList});
     }
+  });
+});
+
+router.post('/proover/save/:id', requireLogin, function(req,res){
+  var proof = req.body;
+  var v_st = validateProof(proof);
+  if(!v_st.isProofValid) {
+    res.json({status: false});
+  }
+  ProofModel.update({_id:req.params.id, userid:req.user.id},
+    {proofData: proof, proofStatus: v_st}, function(err, updateCnt){
+      if(err || updateCnt===0){
+        res.json({status: false});
+        return;
+      }
+      res.json({status: true});
   });
 });
 
