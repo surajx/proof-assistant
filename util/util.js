@@ -35,5 +35,39 @@ function compareFormule(formule1, formule2){
     return formule1.replace(/ /g,'')===formule2.replace(/ /g,'')
 }
 
+function proofObjSanitize(proof){
+    if(!(proof.hasOwnProperty('proofLines') &&
+        (proof.proofLines instanceof Array)))
+        proof.proofLines = []
+    if(!(proof.hasOwnProperty('premises') &&
+        (proof.premises instanceof Array)))
+        proof.premises = []
+    if(!proof.hasOwnProperty('goal'))
+        proof.goal = '';
+
+    for (var i = proof.proofLines.length - 1; i >= 0; i--) {
+        var curProofLine = proof.proofLines[i];
+        if(!curProofLine.hasOwnProperty('rule'))
+            curProofLine.rule = '';
+        if(!(curProofLine.hasOwnProperty('annotationsStr') &&
+            (curProofLine.annotationsStr instanceof Array)))
+            curProofLine.annotationsStr = [];
+        if(!(curProofLine.hasOwnProperty('annotations') &&
+            (curProofLine.annotations instanceof Array)))
+            curProofLine.annotations = [];
+        if(!(curProofLine.hasOwnProperty('depAssumptions') &&
+            (curProofLine.depAssumptions instanceof Array)))
+            curProofLine.depAssumptions = [];
+        if(!curProofLine.hasOwnProperty('lineNo'))
+            curProofLine.lineNo = '';
+        if(!curProofLine.hasOwnProperty('formule'))
+            curProofLine.formule = '';
+        proof.proofLines[i] = curProofLine;
+    };
+
+    return proof;
+}
+
 module.exports.compareFormule = compareFormule;
+module.exports.proofObjSanitize = proofObjSanitize;
 module.exports.addEqualsToArrayPrototype = addEqualsToArrayPrototype;

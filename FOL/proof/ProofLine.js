@@ -27,7 +27,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     var oneDependecy = depAssumptionsArr[i];
     oneDependecy = oneDependecy.replace(/ /g,'');
     if(!(/^\d+$/.test(oneDependecy))) {
-      throw "Invalid Dependent Assumption: " + oneDependecy;
+      throw "Invalid Dependent Assumption: " + depAssumptions;
     }
     if(parseInt(oneDependecy)>parseInt(this.lineNo)){
       throw "Dependent Assumption cannot be greater than \
@@ -88,7 +88,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
         });
         this.annotationsStr.push(oneAnnotation);
       } else {
-        throw "Invalid annotation format: " + oneAnnotation;
+        throw "Invalid annotation format: " + annotations;
       }
     }
   }
@@ -98,7 +98,77 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     throw "Invalid Rule specified: " + rule;
   }
   this.rule = rule;
-  //TODO verify that for each rule the correct number of annotations are specified.
+  if (this.rule==="∧E" || this.rule==="→I" || this.rule==="¬I" ||
+      this.rule==="¬¬E" || this.rule==="¬¬I" || this.rule==="∨I") {
+    if(this.annotations.length!==1)
+      throw this.rule + " shoule have only one annotation.";
+  } else if (this.rule==="∧I" || this.rule==="→E" || this.rule==="¬E"){
+    if(this.annotations.length!==2)
+      throw this.rule + " shoule have exactly two annotations.";
+  } else if(this.rule==="∨E") {
+    if(this.annotations.length!==3)
+      throw this.rule + " shoule have exactly three annotations.";
+  }
+  if (this.rule==="→I" || this.rule==="¬I") {
+    //We can index otherwise it would have thrown error before.
+    if(this.annotationsStr[0].match(/^(\d)\[(\d*)\]$/)===null){
+      throw "Annotation for " + this.rule + " should be specified \
+        in the format: premise line no[discharging assumption line no]. \
+        Eg: 3[2]";
+    }
+  } else if(this.rule==="∨E") {
+      var nonDischargeAssumption = -1;
+      for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
+        if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
+          nonDischargeAssumption = i;
+          break;
+        }
+      };
+      if (nonDischargeAssumption<0){
+        throw "Annotation for " + this.rule + " should contain \
+          exactly one non-discharging and two discharging annotations. No \
+          non-discharging annotation was given. Eg: 1,5[2],8[6]";
+      }
+      for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
+        if (i===nonDischargeAssumption) continue;
+        if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
+          throw "Annotation for " + this.rule + " should contain \
+            exactly one non-discharging and two discharging annotations. Did \
+            not find two discharging annotation. Eg: 1,5[2],8[6]";
+        }
+      };
+  }
+}
+
+function validateProofLine(proofLine){
+  try {
+    var annotationStr = [];
+    for (var i = proofLine.annotations.length - 1; i >= 0; i--) {
+      var tmpStr = proofLine.annotations[i].annotation;
+      //This hack is the workaround since JSON serialization do
+      //not allow null as a valid JSON format.
+      //→I and RAA are the two rules that allow vaccuous discharge.
+      if (proofLine.annotations[i].discharge!=='' ||
+        proofLine.rule==="→I" || proofLine.rule==="RAA"){
+        tmpStr += '[' + proofLine.annotations[i].discharge + ']'
+      }
+      annotationStr.push(tmpStr);
+    };
+    var tmpProofLine = new ProofLine(
+      proofLine.depAssumptions.join(','),
+      proofLine.lineNo,
+      proofLine.formule,
+      annotationStr.join(','),
+      proofLine.rule);
+    return {
+      status: true
+    }
+  } catch(err) {
+    return {
+      status: false,
+      err: err
+    }
+  }
 }
 
 function genProofLine(proofLineData) {
@@ -122,3 +192,4 @@ function genProofLine(proofLineData) {
 }
 
 module.exports.genProofLine = genProofLine;
+module.exports.validateProofLine = validateProofLine;
