@@ -9,7 +9,7 @@ ConjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
   var lnoErrStr = "[line: "+curProofLine.lineNo+"]: "
   var rulePremises = proofGraph.getAdjOf(curProofLine);
   if(curProofLine.annotations.length!==2) {
-    throw lnoErrStr + "∧E rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
+    throw lnoErrStr + "∧I rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
   }
   if(rulePremises.length!==2) {
     throw lnoErrStr + "∧I rule should have exactly two premises. Make sure that your \
@@ -34,7 +34,7 @@ ConjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
     var tmpFormule = primeFormulaForCompare(rulePremises[i].formule);
     if (topLevelConjuncts.indexOf(tmpFormule)<0){
       throw lnoErrStr + "A formule specified in the annotation is not a \
-        top level conjuct in the proof line."
+        top level conjunct in the proof line."
     }
   }
   return true;
