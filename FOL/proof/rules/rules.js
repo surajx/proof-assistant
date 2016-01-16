@@ -16,7 +16,7 @@ module.exports = {
     "∧E" : new ConjunctionElimRule(),
     "∧I" : new ConjunctionIntroRule(),
 //    "∨E" : new DisjunctionElimRule(),
-//    "∨I" : new DisjunctionIntroRule(),
+    "∨I" : new DisjunctionIntroRule(),
     "→E" : new ImplicationElimRule(),
     "→I" : new ImplicationIntroRule(),
 //    "RAA": new ReductioAdAbsurdumRule(),
