@@ -35,7 +35,8 @@ DisjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
   if (topLevelConjuncts.indexOf(tmpFormule)<0){
     throw lnoErrStr + "A formule specified in the annotation is not a \
     top level conjunct in the proof line."
-    }
+  }
+  
   return true;
 }
 
