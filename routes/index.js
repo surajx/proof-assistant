@@ -4,8 +4,9 @@ var router = express.Router();
 var User = require('../models/User.js');
 var ProofModel = require('../models/Proof.js');
 
+var proofObjSanitize = require('../util/util.js').proofObjSanitize;
 var genNewProof = require('../FOL/proof/Proof.js').genNewProof;
-var validateProof = require('../FOL/proof/Proof.js').validateProof;
+var validateProofServer = require('../FOL/proof/Proof.js').validateProofServer;
 var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
 /* TODO:
@@ -168,10 +169,11 @@ router.get('/proover/:id', requireLogin, function(req,res){
 });
 
 router.post('/proover/save/:id', requireLogin, function(req,res){
-  var proof = req.body;
-  var v_st = validateProof(proof);
+  var proof = proofObjSanitize(req.body);
+  var v_st = validateProofServer(proof);
   if(!v_st.isProofValid) {
-    res.json({status: false});
+    res.json({status: false, err: v_st.err});
+    return;
   }
   ProofModel.update({_id:req.params.id, userid:req.user.id},
     {proofData: proof, proofStatus: v_st}, function(err, updateCnt){
