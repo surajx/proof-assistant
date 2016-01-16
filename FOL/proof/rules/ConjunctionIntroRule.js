@@ -34,7 +34,7 @@ ConjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
     var tmpFormule = primeFormulaForCompare(rulePremises[i].formule);
     if (topLevelConjuncts.indexOf(tmpFormule)<0){
       throw lnoErrStr + "A formule specified in the annotation is not a \
-        top level conjuct in the proof line."
+        top level conjunct in the proof line."
     }
   }
   return true;
