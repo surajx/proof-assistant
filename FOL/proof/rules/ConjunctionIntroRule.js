@@ -9,7 +9,7 @@ ConjunctionIntroRule.prototype.validate = function(proofGraph, curProofLine){
   var lnoErrStr = "[line: "+curProofLine.lineNo+"]: "
   var rulePremises = proofGraph.getAdjOf(curProofLine);
   if(curProofLine.annotations.length!==2) {
-    throw lnoErrStr + "∧E rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
+    throw lnoErrStr + "∧I rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
   }
   if(rulePremises.length!==2) {
     throw lnoErrStr + "∧I rule should have exactly two premises. Make sure that your \

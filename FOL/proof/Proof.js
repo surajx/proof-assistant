@@ -1,5 +1,6 @@
 var rules = require('./rules/rules.js');
 var genProofLine = require('./ProofLine.js').genProofLine;
+var validateProofLine = require('./ProofLine.js').validateProofLine;
 var ProofGraph = require('./ProofGraph.js');
 var FOLParser = require('../parser/parser.js');
 var AssumptionRule = require('./rules/AssumptionRule.js');
@@ -10,6 +11,39 @@ function Proof(premises, goal) {
   this.premises = premises;
   this.goal = goal;
   this.proofLines = [];
+}
+
+function validateProofServer(proof){
+  var goal = proof.goal.trim();
+  //Check if received goal is valid.
+  if (goal==='' || goal===undefined ||
+      goal===null || !FOLParser.isWFF(goal).status){
+    return {
+      isProofValid: false,
+      err: "Invalid goal format specified: " + goal
+    }
+  }
+  //Check if all proofs lines are valid
+  for (var i = proof.proofLines.length - 1; i >= 0; i--) {
+    var pl_st = validateProofLine(proof.proofLines[i]);
+    if(!pl_st.status){
+      return {
+        isProofValid: false,
+        err: pl_st.err
+      }
+    }
+  };
+  //Check if all premises are valid.
+  for (var i = proof.premises.length - 1; i >= 0; i--) {
+    var premiseWFFCheck = FOLParser.isWFF(proof.premises[i].trim());
+    if(!premiseWFFCheck.status){
+      return {
+        isProofValid: false,
+        err: premiseWFFCheck.err
+      }
+    }
+  };
+  return validateProof(proof);
 }
 
 function validateProof(proof) {
@@ -136,5 +170,6 @@ function genNewProof(proofName){
   }
 }
 
+module.exports.validateProofServer = validateProofServer;
 module.exports.validateProof = validateProof;
 module.exports.genNewProof = genNewProof;
