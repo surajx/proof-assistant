@@ -40,7 +40,7 @@ function dependencyVerifier(rulePremises, curProofLine){
   if (Array.prototype.equals===undefined) addEqualsToArrayPrototype();
   var curProofLineDep = curProofLine.depAssumptions;
 
-  //Collect all the assumtions of rule premises.
+  //Collect all the assumptions of rule premises.
   var premiseDepAssumptions = [];
   for (var i = rulePremises.length - 1; i >= 0; i--) {
     premiseDepAssumptions = premiseDepAssumptions.concat(rulePremises[i].depAssumptions);
@@ -61,7 +61,7 @@ function dependencyVerifier(rulePremises, curProofLine){
     var hasDischarged = true;
     for (var i = dischargeArray.length - 1; i >= 0; i--) {
         var dischargePos = premiseDepAssumptions.indexOf(dischargeArray[i]);
-        //NOTE: this does not mean that the discharges assumtion is for the
+        //NOTE: this does not mean that the discharges assumption is for the
         // correct premise, this has to be separately verified.
         if (dischargePos>=0){
             premiseDepAssumptions.splice(dischargePos, 1);

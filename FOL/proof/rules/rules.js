@@ -20,8 +20,8 @@ module.exports = {
     "→E" : new ImplicationElimRule(),
     "→I" : new ImplicationIntroRule(),
 //    "RAA": new ReductioAdAbsurdumRule(),
-//    "¬¬E": new DoubleNegationElimRule(),
-//    "¬¬I": new DoubleNegationIntroRule(),
+    "¬¬E": new DoubleNegationElimRule(),
+    "¬¬I": new DoubleNegationIntroRule(),
 //    "¬E" : new NegationElimRule(),
 //    "¬I" : new NegationIntroRule()
 }
