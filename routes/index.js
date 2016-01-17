@@ -115,7 +115,7 @@ function requireLogin(req, res, next) {
 
 router.get('/dashboard', requireLogin, function(req,res) {
   //TODO: Fetch all the proofs the user has created and send as locals.
-  ProofModel.find({userid:req.user.id}, function(err, proofs){
+  ProofModel.find({userid:req.user.id, isDeleted:false}, function(err, proofs){
     var proofList = [];
     //TODO: if err do something
     if (proofs && proofs.length>0){
@@ -158,7 +158,7 @@ router.post('/proover/new', requireLogin, function(req,res){
 });
 
 router.get('/proover/:id', requireLogin, function(req,res){
-  ProofModel.findOne({_id:req.params.id, userid:req.user.id}, function(err, proof){
+  ProofModel.findOne({_id:req.params.id, userid:req.user.id, isDeleted:false}, function(err, proof){
     if (err || !proof) {
       res.redirect('/dashboard');
     } else {
@@ -175,14 +175,42 @@ router.post('/proover/save/:id', requireLogin, function(req,res){
     res.json({status: false, err: v_st.err});
     return;
   }
-  ProofModel.update({_id:req.params.id, userid:req.user.id},
-    {proofData: proof, proofStatus: v_st}, function(err, updateCnt){
-      if(err || updateCnt===0){
-        res.json({status: false});
+  ProofModel.update({_id:req.params.id, userid:req.user.id, isDeleted:false},
+    {proofData: proof, proofStatus: v_st}, function(err, updateResp){
+      if(err) {
+        res.json({status: false, err: "DB error!"});
+        return;
+      }
+      if(updateResp.nModified===0) {
+        res.json({status: false, err: "Proof Not found in DB!"});
         return;
       }
       res.json({status: true});
   });
+});
+
+router.post('/dashboard/delete/', requireLogin, function(req,res){
+  var deleteArr = req.body.delete;
+  if (deleteArr instanceof Array) {
+    if(deleteArr.length>0){
+      ProofModel.update({_id: {$in: deleteArr}, userid:req.user.id},
+        {isDeleted: true},{multi: true}, function(err, updateResp){
+          if(err) {
+            res.json({status: false, err: "DB error!"});
+            return;
+          }
+          if(updateResp.nModified===0) {
+            res.json({status: false, err: "Proof Not found in DB!"});
+            return;
+          }
+          res.json({status: true, msg: updateResp.nModified});
+      });
+    } else {
+      res.json({status: false, err: "Nothing to delete."});
+    }
+  } else {
+    res.json({status: false, err: "Invalid data received."});
+  }
 });
 
 module.exports = router;
