@@ -34,12 +34,32 @@ ns_proover.addMiscListeners = function(){
   $(".proof-rule").click(function() {
     $("#selectedRule").val($(this).text());
   });
-  
+
   $("#formule").on("input propertychange paste", function(){
     dynamicTextFormInput.call(this)
   });
-  
+
   $("#selectedRule").on("input propertychange paste", function(){
     dynamicTextFormInput.call(this)
+  });
+
+  $("#delLineBtn").click(function(){
+    if(proof.proofLines.length>0){
+      var delLine = proof.proofLines[proof.proofLines.length -1];
+      proof.proofLines.splice(-1,1);
+      try {
+        var FOLValidator = require('FOLValidator');
+        var v_st = FOLValidator.validateProof(proof);
+        ns_proover.updateUIProofStatus(v_st);
+        $('#proofTable tr:last').remove();
+        $("#saveProofBtn").removeClass("btn-success");
+        $("#saveProofBtn").addClass("btn-danger");
+      } catch (err){
+        proof.proofLines.push(delLine);
+        $.toaster({ settings : {timeout: 8000} });
+        $.toaster({ priority : 'danger',
+          title : 'Delete', message : 'Unable to delete last row. ' + err});
+      }
+    }
   });
 }

@@ -20,7 +20,10 @@ block content
     div.jumbotron
       h3.text-center: span.label.label-primary= proofModel.proofName
       button.btn.btn-lg.btn-primary#addNewLineBtn(type="button",
-      data-toggle="modal", data-target="#newLineModal") Add New Line
+      data-toggle="modal", data-target="#newLineModal")
+        span.glyphicon.glyphicon-plus(aria-hidden="true")
+      button.btn.btn-lg.btn-danger#delLineBtn(type="button", style="margin-left: 10px" )
+        span.glyphicon.glyphicon-minus(aria-hidden="true")
       button.btn.btn-lg.btn-success#saveProofBtn(type="button", style="margin-left: 10px" data-loading-text="<i class='glyphicon glyphicon-hourglass' aria-hidden='true'></i>") Save
       -var v_st = proofModel.proofStatus;
       if !v_st.isProofValid

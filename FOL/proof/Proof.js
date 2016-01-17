@@ -82,16 +82,18 @@ function validateProof(proof) {
     }
     isPremiseMaintained = false;
   }
-
-  var isGoalAttained = compareFormule(goal,lastProoLineFormule);
-  if (isGoalAttained) {
-    var lastLineDepAssumptions = proof.proofLines[prfLineLen-1].depAssumptions;
-    for (var i = lastLineDepAssumptions.length - 1; i >= 0; i--) {
-      if (premiseDepAssumptions.indexOf(lastLineDepAssumptions[i])<0) {
-        isGoalAttained = false;
-        break;
-      }
-    };
+  var isGoalAttained = false;
+  if(lastProoLineFormule!==undefined){
+    isGoalAttained = compareFormule(goal,lastProoLineFormule);
+    if (isGoalAttained) {
+      var lastLineDepAssumptions = proof.proofLines[prfLineLen-1].depAssumptions;
+      for (var i = lastLineDepAssumptions.length - 1; i >= 0; i--) {
+        if (premiseDepAssumptions.indexOf(lastLineDepAssumptions[i])<0) {
+          isGoalAttained = false;
+          break;
+        }
+      };
+    }
   }
   return {
     isProofValid       : isProofValid,
