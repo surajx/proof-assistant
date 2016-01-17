@@ -18,7 +18,7 @@ ns_proover.initiateSave = function($btn){
         } else {
           $.toaster({ settings : {timeout: 8000} });
           $.toaster({ priority : 'danger',
-            title : 'Server Message', message : '[Save Error]: ' + data.err});
+            title : 'Server Message', message : 'Save Error: ' + data.err});
           console.log(data.err);
         }
     },

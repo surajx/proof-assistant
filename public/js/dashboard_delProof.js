@@ -1,6 +1,6 @@
 if(ns_dashboard===undefined) var ns_dashboard = {};
 
-ns_dashboard.initiateDelete = function($btn, deleteArr) {
+ns_dashboard.initiateDelete = function(deleteArr) {
   $.ajax({
     url: '/dashboard/delete/',
     data: {delete: deleteArr},
@@ -10,11 +10,12 @@ ns_dashboard.initiateDelete = function($btn, deleteArr) {
         if(data.status) {
           $.toaster({ settings : {timeout: 2000} });
           $.toaster({ priority : 'success',
-            title : 'Server Message', message : 'Delete Successful!'});
+            title : 'Server Message', message : 'Delete Successful. \
+            Number of proofs deleted: ' + data.msg});
         } else {
           $.toaster({ settings : {timeout: 8000} });
           $.toaster({ priority : 'danger',
-            title : 'Server Message', message : '[Delete Error]: ' +
+            title : 'Server Message', message : 'Delete Error: ' +
             data.err + " Please refresh the page."});
           console.log(data.err);
         }
@@ -62,7 +63,7 @@ ns_dashboard.addDelProofListeners = function(){
       $("#delProofBtn").addClass("hidden");
       $("#noProofTxt").removeClass("hidden");
     }
-    if(deleteArr.length>0) return;
-      //ns_dashboard.initiateDelete(deleteArr);
+    if(deleteArr.length>0)
+      ns_dashboard.initiateDelete(deleteArr);
   });
 }
