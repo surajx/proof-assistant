@@ -29,8 +29,19 @@ function getParserForTokens(tokens, errListener) {
 }
 
 function getParserForFormule(input){
-  input = addParensToFormule(input);
-  return getParserForTokens(tokenizeInput(input));
+  var parenContainer = checkNeedParen(input);
+  if(parenContainer.status){
+    input = parenContainer.formule;
+  } else {
+    return {
+      status: false,
+      err: parenContainer.err
+    }
+  }
+  return {
+    status: true,
+    parser: getParserForTokens(tokenizeInput(input))
+  }
 }
 
 function addParensToSequent(proofName){
@@ -42,10 +53,26 @@ function addParensToSequent(proofName){
       if (seqArr.length==2 && seqArr[0]!==''){
         premises = seqArr[0].split(",");
         for (var i=0; i<premises.length; i++){
-          premises[i] = addParensToFormule(premises[i].trim());
+          var parenContainer = checkNeedParen(premises[i].trim());
+          if(parenContainer.status){
+            premises[i] = parenContainer.formule;
+          } else {
+            return {
+              status: false,
+              err: parenContainer.err
+            }
+          }
         }
       }
-      proofGoal = addParensToFormule(seqArr[1].trim());
+      var parenContainer = checkNeedParen(seqArr[1].trim());
+      if(parenContainer.status){
+        proofGoal = parenContainer.formule;
+      } else {
+        return {
+          status: false,
+          err: parenContainer.err
+        }
+      }
       return {
         status: true,
         input: premises.join(', ') + " ⊢ " + proofGoal
@@ -57,19 +84,39 @@ function addParensToSequent(proofName){
     }
 }
 
-function addParensToFormule(formule){
-  if(formule[0]==="¬" || formule.length===1) {
-    return formule;
+function checkNeedParen(formule) {
+  var parened_input = "("+formule+")";
+  if(isWFFCheck(parened_input).status) {
+    return {
+      status: true,
+      formule: parened_input
+    }
+  } else {
+    var wffContainer = isWFFCheck(formule);
+    if(wffContainer.status) {
+      return {
+        status: true,
+        formule: formule
+      }
+    } else {
+      return wffContainer
+    }
   }
-  //TODO: check the case if already paranthesized.
-  return '(' + formule + ')';
+}
+
+function isWFF(input) {
+  var parened_input = "("+input+")";
+  var isWFFCheckContainer = isWFFCheck(parened_input);
+  if(isWFFCheckContainer.status) {
+    return isWFFCheckContainer
+  } else {
+    return isWFFCheck(input);
+  }
 }
 
 
-
 //Is input a Well Formed Formule
-function isWFF(input) {
-  input = addParensToFormule(input);
+function isWFFCheck(input) {
   var errListener = new FOLErrorListener();
   var tokens = tokenizeInput(input, errListener);
   var parser = getParserForTokens(tokens, errListener);
@@ -110,4 +157,5 @@ function isWFS(input) {
 
 module.exports.isWFF = isWFF;
 module.exports.isWFS = isWFS;
+module.exports.checkNeedParen = checkNeedParen;
 module.exports.getParserForFormule = getParserForFormule;
