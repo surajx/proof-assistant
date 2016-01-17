@@ -14,9 +14,8 @@ ns_proover.initiateSave = function($btn){
           $("#saveProofBtn").addClass("btn-success");
           $.toaster({ settings : {timeout: 2000} });
           $.toaster({ priority : 'success',
-            title : 'Server Message', message : 'Save Successfull!'});
+            title : 'Server Message', message : 'Save Successful!'});
         } else {
-          //TODO: add data.err to save error pane.
           $.toaster({ settings : {timeout: 8000} });
           $.toaster({ priority : 'danger',
             title : 'Server Message', message : '[Save Error]: ' + data.err});
@@ -24,6 +23,7 @@ ns_proover.initiateSave = function($btn){
         }
     },
     error: function (xhr, status, error) {
+        $btn.button('reset');
         console.log('Error: ' + JSON.stringify(error));
     },
   });

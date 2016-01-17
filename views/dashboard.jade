@@ -3,40 +3,10 @@ extend layout
 block append js
   script(src="/js/parserBundle.js")
   script(src="/js/commandsToUnicode.js")
-  script(type='text/javascript').
-    $(document).ready(function(){
-      
-      $("[data-hide]").on("click", function(){
-        $(this).closest("." + $(this).attr("data-hide")).hide();
-      });
-
-      $("#proofName").on("input propertychange paste",function(){
-        var isDisabled = true;
-        ($(this).val() === "") ? isDisabled=true : isDisabled=false;
-        $("#formSubmitBtn").prop("disabled", isDisabled);
-      });
-      
-      $("#proofName").on("input propertychange paste", function(){
-        dynamicTextFormInput.call(this)
-      });
-      
-      $('#formSubmitBtn').click(function(){
-        var FOLParser = require('FOLParser');
-        var proofName = $('#proofName').val().trim().replace(/\s\s+/g, ' ');
-        var wfsCheck = FOLParser.isWFS(proofName);
-        if (wfsCheck.status){
-          $('#modalForm').submit();
-        } else {
-          $( '#wfsErrDiv' ).removeClass( "hidden" );
-          $('#wfsErrDiv').show();
-          $('#wfsErrMsg').text(wfsCheck.err.join('\n'));
-        }
-      });
-
-      $('.modal').on('shown.bs.modal', function () {
-        $(this).find('input:text:visible:first').focus();
-      });
-    });
+  script(src="/js/dashboard_delProof.js")
+  script(src="/js/dashboard_newProof.js")
+  script(src="/js/dashboard_util.js")
+  script(src="/js/dashboard.js")
 
 block append css
   link(rel='stylesheet', href="/css/proof-line.css")
@@ -46,10 +16,18 @@ block content
     div.jumbotron
       button.btn.btn-lg.btn-success(type="button",
       data-toggle="modal", data-target="#newProofModal") New Proof
+      button.btn.btn-lg.btn-default#delChkAllBtn(type="button", style="margin-left: 10px")
+        span.glyphicon.glyphicon-check(aria-hidden="true")
+      button.btn.btn-lg.btn-default#delUnChkAllBtn(type="button", style="margin-left: 10px")
+        span.glyphicon.glyphicon-unchecked(aria-hidden="true")
+      button.btn.btn-lg.btn-danger.hidden#delProofBtn(type="button", style="margin-left: 10px")
+        span.glyphicon.glyphicon-trash(aria-hidden="true")
       if proofList.length>0
         div.list-group.proof-list
           each proof in proofList
-            a.list-group-item(href="/proover/"+proof.id): h5.proof-line= proof.name
+            a.list-group-item(href="/proover/"+proof.id, id=proof.id)
+              input.del-check-box(type="checkbox", value=proof.id, name="toDelete", style="margin-right: 10px;")
+              strong.proof-line= proof.name
               -var v_st = proof.status;
               if !v_st.isProofValid
                 span.label.label-pill.label-danger.pull-right: h6#ps_h(style="color:white;") INVALID PROOF
@@ -61,8 +39,9 @@ block content
                 span.label.label-pill.label-success.pull-right: h6#ps_h(style="color:white;") SUCCESS
               else
                 span.label.label-pill.label-default.pull-right: h6#ps_h(style="color:white;") PROOF CURROPTED
+        div.hidden.text-center#noProofTxt You have no existing proofs, click on "New Proof" to create one.
       else
-        div.text-center You have no existing proofs, click on "New Proof" to create one.
+        div.text-center#noProofTxt You have no existing proofs, click on "New Proof" to create one.
 
   div.modal.fade#newProofModal(tabindex="-1", role="dialog", aria-labelledby="myModalLabel")
     div.modal-dialog(role="document")
