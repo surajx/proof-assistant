@@ -20,6 +20,8 @@ function commandsToUnicode(formInput) {
         .replace(/\\a/g, "\u2227")
         .replace(/\\o/g, "\u2228")
         .replace(/\\e/g, "\u22A2")
+        .replace(/\\f/g, "⊥")
+        .replace(/\\t/g, "\u22A4")
         .replace(/\\n/g, "\u00AC");
     
     // Output formInput

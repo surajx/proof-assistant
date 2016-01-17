@@ -15,7 +15,7 @@ function getTopLevelFormulasForConnective(input, connective) {
     throw parserContainer.err + " on input: " + input;
   }
   var topLevelFormulas = [];
-  //Very innefficient: not walking the entire tree.
+  //Very inefficient: not walking the entire tree.
   //Need to figure out how to stop the walk once the top is found
   var gotTopLevelFormulas = false;
   FOLTreeWalker.prototype.enterFormula = function(ctx) {
