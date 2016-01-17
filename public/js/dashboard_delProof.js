@@ -29,7 +29,6 @@ ns_dashboard.initiateDelete = function(deleteArr) {
 ns_dashboard.addDelProofListeners = function(){
 
   $(".del-check-box").change(function(){
-    console.log($("input[name='toDelete']:checked").length);
     if($("input[name='toDelete']:checked").length>0){
       $("#delProofBtn").removeClass("hidden");
     } else {
