@@ -1,5 +1,4 @@
 var dependencyVerifier = require('./dependencyVerifier.js').dependencyVerifier;
-var getTopLevelFormulasForConnective = require('./ruleUtil.js').getTopLevelFormulasForConnective;
 var primeFormulaForCompare = require('./ruleUtil.js').primeFormulaForCompare;
 
 function DoubleNegationIntroRule(){
