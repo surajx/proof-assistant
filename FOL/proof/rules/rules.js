@@ -22,7 +22,7 @@ module.exports = {
 //    "RAA": new ReductioAdAbsurdumRule(),
     "¬¬E": new DoubleNegationElimRule(),
     "¬¬I": new DoubleNegationIntroRule(),
-//    "¬E" : new NegationElimRule(),
-//    "¬I" : new NegationIntroRule()
+    "¬E" : new NegationElimRule(),
+    "¬I" : new NegationIntroRule()
 }
 
