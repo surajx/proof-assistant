@@ -14,7 +14,7 @@ ns_proover.initiateSave = function($btn){
           $("#saveProofBtn").addClass("btn-success");
           $.toaster({ settings : {timeout: 2000} });
           $.toaster({ priority : 'success',
-            title : 'Server Message', message : 'Save Successful!'});
+            title : 'Server Message', message : data.msg});
         } else {
           $.toaster({ settings : {timeout: 8000} });
           $.toaster({ priority : 'danger',
