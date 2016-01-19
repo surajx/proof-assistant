@@ -143,7 +143,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     var msg2 = "Annotation for " + this.rule + " should contain \
       exactly one non-discharging and two discharging annotations. Did \
       not find two discharging annotation. Eg: 1,5[2],8[6]"
-    check_ORE_RAA(msg1, msg2);
+    check_ORE_RAA.call(this, msg1, msg2);
   } else if(this.rule==="RAA") {
     var msg1 = "Annotation for " + this.rule + " should contain \
       exactly one non-discharging and one discharging(can be vacuous) \
@@ -153,7 +153,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
       exactly one non-discharging and one discharging(can be vacuous) \
       annotations. Did not find the discharging annotation. \
       Eg: 1,5[2] or 1,5[]"
-    check_ORE_RAA(msg1, msg2);
+    check_ORE_RAA.call(this, msg1, msg2);
   }
 }
 
