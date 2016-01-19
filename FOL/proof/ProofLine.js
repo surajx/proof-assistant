@@ -102,12 +102,32 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
       this.rule==="¬¬E" || this.rule==="¬¬I" || this.rule==="∨I") {
     if(this.annotations.length!==1)
       throw this.rule + " shoule have only one annotation.";
-  } else if (this.rule==="∧I" || this.rule==="→E" || this.rule==="¬E"){
+  } else if (this.rule==="∧I" || this.rule==="→E" ||
+             this.rule==="¬E" || this.rule==="RAA") {
     if(this.annotations.length!==2)
       throw this.rule + " shoule have exactly two annotations.";
   } else if(this.rule==="∨E") {
     if(this.annotations.length!==3)
       throw this.rule + " shoule have exactly three annotations.";
+  }
+
+  var check_ORE_RAA = function(msg1, msg2){
+    var nonDischargeAssumption = -1;
+    for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
+      if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
+        nonDischargeAssumption = i;
+        break;
+      }
+    };
+    if (nonDischargeAssumption<0){
+      throw msg1;
+    }
+    for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
+      if (i===nonDischargeAssumption) continue;
+      if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
+        throw msg2;
+      }
+    };
   }
   if (this.rule==="→I" || this.rule==="¬I") {
     //We can index otherwise it would have thrown error before.
@@ -117,26 +137,23 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
         Eg: 3[2]";
     }
   } else if(this.rule==="∨E") {
-      var nonDischargeAssumption = -1;
-      for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
-        if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
-          nonDischargeAssumption = i;
-          break;
-        }
-      };
-      if (nonDischargeAssumption<0){
-        throw "Annotation for " + this.rule + " should contain \
-          exactly one non-discharging and two discharging annotations. No \
-          non-discharging annotation was given. Eg: 1,5[2],8[6]";
-      }
-      for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
-        if (i===nonDischargeAssumption) continue;
-        if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
-          throw "Annotation for " + this.rule + " should contain \
-            exactly one non-discharging and two discharging annotations. Did \
-            not find two discharging annotation. Eg: 1,5[2],8[6]";
-        }
-      };
+    var msg1 = "Annotation for " + this.rule + " should contain \
+      exactly one non-discharging and two discharging annotations. No \
+      non-discharging annotation was given. Eg: 1,5[2],8[6]"
+    var msg2 = "Annotation for " + this.rule + " should contain \
+      exactly one non-discharging and two discharging annotations. Did \
+      not find two discharging annotation. Eg: 1,5[2],8[6]"
+    check_ORE_RAA(msg1, msg2);
+  } else if(this.rule==="RAA") {
+    var msg1 = "Annotation for " + this.rule + " should contain \
+      exactly one non-discharging and one discharging(can be vacuous) \
+      annotations. No non-discharging annotation was given. \
+      Eg: 1,5[2] or 1,5[]"
+    var msg2 = "Annotation for " + this.rule + " should contain \
+      exactly one non-discharging and one discharging(can be vacuous) \
+      annotations. Did not find the discharging annotation. \
+      Eg: 1,5[2] or 1,5[]"
+    check_ORE_RAA(msg1, msg2);
   }
 }
 
@@ -148,8 +165,8 @@ function validateProofLine(proofLine){
       //This hack is the workaround since JSON serialization do
       //not allow null as a valid JSON format.
       //→I and RAA are the two rules that allow vaccuous discharge.
-      if (proofLine.annotations[i].discharge!=='' ||
-        proofLine.rule==="→I" || proofLine.rule==="RAA"){
+      if (proofLine.annotations[i].discharge!=='' || proofLine.rule==="→I" ||
+          proofLine.rule==="RAA" || proofLine.rule==="¬I"){
         tmpStr += '[' + proofLine.annotations[i].discharge + ']'
       }
       annotationStr.push(tmpStr);
