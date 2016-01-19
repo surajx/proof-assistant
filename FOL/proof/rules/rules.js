@@ -19,7 +19,7 @@ module.exports = {
     "∨I" : new DisjunctionIntroRule(),
     "→E" : new ImplicationElimRule(),
     "→I" : new ImplicationIntroRule(),
-//    "RAA": new ReductioAdAbsurdumRule(),
+    "RAA": new ReductioAdAbsurdumRule(),
     "¬¬E": new DoubleNegationElimRule(),
     "¬¬I": new DoubleNegationIntroRule(),
     "¬E" : new NegationElimRule(),
