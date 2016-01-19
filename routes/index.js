@@ -181,11 +181,15 @@ router.post('/proover/save/:id', requireLogin, function(req,res){
         res.json({status: false, err: "DB error!"});
         return;
       }
-      if(updateResp.nModified===0) {
-        res.json({status: false, err: "Proof Not found in DB!"});
+      if(updateResp.nModified===0 && updateResp.n===1) {
+        res.json({status: true, msg: "Nothing to save!"});
         return;
       }
-      res.json({status: true});
+      if(updateResp.n===0) {
+        res.json({status: false, err: "Proof Not Found in DB!"});
+        return;
+      }
+      res.json({status: true, msg: "Save Successful!"});
   });
 });
 
@@ -193,7 +197,7 @@ router.post('/dashboard/delete/', requireLogin, function(req,res){
   var deleteArr = req.body.delete;
   if (deleteArr instanceof Array) {
     if(deleteArr.length>0){
-      ProofModel.update({_id: {$in: deleteArr}, userid:req.user.id},
+      ProofModel.update({_id: {$in: deleteArr}, userid:req.user.id, isDeleted: false},
         {isDeleted: true},{multi: true}, function(err, updateResp){
           if(err) {
             res.json({status: false, err: "DB error!"});

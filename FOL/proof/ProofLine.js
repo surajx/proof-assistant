@@ -162,23 +162,11 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
 
 function validateProofLine(proofLine){
   try {
-    var annotationStr = [];
-    for (var i = proofLine.annotations.length - 1; i >= 0; i--) {
-      var tmpStr = proofLine.annotations[i].annotation;
-      //This hack is the workaround since JSON serialization do
-      //not allow null as a valid JSON format.
-      //→I and RAA are the two rules that allow vaccuous discharge.
-      if (proofLine.annotations[i].discharge!=='' || proofLine.rule==="→I" ||
-          proofLine.rule==="RAA" || proofLine.rule==="¬I"){
-        tmpStr += '[' + proofLine.annotations[i].discharge + ']'
-      }
-      annotationStr.push(tmpStr);
-    };
     var tmpProofLine = new ProofLine(
       proofLine.depAssumptions.join(','),
       proofLine.lineNo,
       proofLine.formule,
-      annotationStr.join(','),
+      proofLine.annotationsStr.join(','),
       proofLine.rule);
     return {
       status: true
