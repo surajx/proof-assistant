@@ -1,5 +1,18 @@
 if (ns_proover===undefined) var ns_proover={};
 
+ns_proover.modelSubmitOnEnter = function(){
+  $('#newLineModal').keypress(function(e) {
+    if (e.which === 13) {
+        if($("#lineSubmitBtn").hasClass("hidden")){
+          $("#lineSaveBtn").click();
+        } else if($("#lineSaveBtn").hasClass("hidden")) {
+          $("#lineSubmitBtn").click();
+        }
+    }
+  });
+
+}
+
 ns_proover.resetModal = function(){
   $("#depAssumptions").val("");
   $("#formule").val("");
@@ -23,6 +36,8 @@ ns_proover.removeAllLabelModifiers = function(){
 }
 
 ns_proover.addMiscListeners = function(){
+  ns_proover.modelSubmitOnEnter();
+
   $("[data-hide]").on("click", function(){
     $(this).closest("." + $(this).attr("data-hide")).hide();
   });

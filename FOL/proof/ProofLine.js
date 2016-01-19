@@ -1,6 +1,7 @@
 var parser = require('../parser/parser.js');
 
 function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
+  annotations = annotations.trim();
   if (rule==='' && annotations!=="A") {
     throw "The proof line does not have a valid Rule.";
   }
