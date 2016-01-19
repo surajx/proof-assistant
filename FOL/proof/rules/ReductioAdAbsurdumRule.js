@@ -6,13 +6,12 @@ function ReductioAdAbsurdumRule(){
 }
 
 ReductioAdAbsurdumRule.prototype.validate = function(proofGraph, curProofLine){
-  console.log("function called");
+  
   var lnoErrStr = "[line: "+curProofLine.lineNo+"]: "
   var rulePremises = proofGraph.getAdjOf(curProofLine);
   if(curProofLine.annotations.length!==2) {
     throw lnoErrStr + "RAA rule should have two annotations. Given: " + curProofLine.annotationsStr.join(',');
   }
-  console.out("rulePremises", rulePremises);
   
   var dependencyVerifyObj = dependencyVerifier(rulePremises, curProofLine);
   if (!dependencyVerifyObj.status){
@@ -24,14 +23,9 @@ ReductioAdAbsurdumRule.prototype.validate = function(proofGraph, curProofLine){
     }
   }
   
-  //Check that the formulae referenced to by the annotations form a contradiction
-  var tmpFormuleArray = [primeFormulaForCompare(rulePremises[0].formule), primeFormulaForCompare(rulePremises[1].formule)];
-  if (tmpFormuleArray[0].length > tmpFormuleArray[1].length) {tmpFormuleArray.reverse()};
-  if ("¬" + tmpFormuleArray[0] !== tmpFormuleArray[1]){
-      throw lnoErrStr + "formulae referenced to by the annotations \
-      do not form a contradiction."
-  }
-    
+  // Variable to keep track of the position of the discharged ProofLine in RulePremises 
+  var arrDischrOffset = 0;  
+  
   // If discharge is vacuous rulePremises should equal 2 otherwise 3
   if(rulePremises.length === 2){
     var tmpCurForm = primeFormulaForCompare(curProofLine.formule);
@@ -39,14 +33,23 @@ ReductioAdAbsurdumRule.prototype.validate = function(proofGraph, curProofLine){
       throw lnoErrStr + "Inputted formulae does not have a negation"
     }
   } else if (rulePremises.length === 3){
-    var tmpCurForm = primeFormulaForCompare(curProofLine.formule);
-    var tmpRefForm = primeFormulaForCompare(rulePremises[2].formule);
-    if(tmpCurForm !== "¬" + tmpRefForm){
-      throw lnoErrStr + "discharged formulae does not match the negated input formulae";
+      if (curProofLine.annotations[0].discharge !== '') {arrDischrOffset = 1;}
+      var tmpCurForm = primeFormulaForCompare(curProofLine.formule);
+      var tmpRefForm = primeFormulaForCompare(rulePremises[2 - arrDischrOffset].formule);
+      if(tmpCurForm !== "¬" + tmpRefForm){
+        throw lnoErrStr + "discharged formulae does not match the negated input formulae";
     }
   } else {
-    throw lnoErrStr + "RAA rule should have 2 or 3 premises. Make sure that your \
-      annotation contains references to one or more line-numbers.";
+      throw lnoErrStr + "RAA rule should have 2 premises. Make sure that your \
+        annotation contains references to one or more line-numbers.";
+  }
+  
+  //Check that the formulae referenced to by the annotations form a contradiction
+  var tmpFormuleArray = [primeFormulaForCompare(rulePremises[0].formule), primeFormulaForCompare(rulePremises[1 + arrDischrOffset].formule)];
+  if (tmpFormuleArray[0].length > tmpFormuleArray[1].length) {tmpFormuleArray.reverse()};
+  if ("¬" + tmpFormuleArray[0] !== tmpFormuleArray[1]){
+      throw lnoErrStr + "formulae referenced to by the annotations \
+      do not form a contradiction."
   }
   
   return true;

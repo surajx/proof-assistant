@@ -111,7 +111,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
       throw this.rule + " shoule have exactly three annotations.";
   }
 
-  var check_ORE_RAA = function(msg1, msg2){
+  var check_ORE_RAA = function(msg1, msg2, nd_count){
     var nonDischargeAssumption = -1;
     for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
       if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
@@ -122,12 +122,15 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     if (nonDischargeAssumption<0){
       throw msg1;
     }
+    var cnt = 0;
     for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
       if (i===nonDischargeAssumption) continue;
       if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
         throw msg2;
       }
+      cnt+=1;
     };
+    if(cnt!==nd_count) throw msg2;
   }
   if (this.rule==="→I" || this.rule==="¬I") {
     //We can index otherwise it would have thrown error before.
@@ -143,7 +146,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     var msg2 = "Annotation for " + this.rule + " should contain \
       exactly one non-discharging and two discharging annotations. Did \
       not find two discharging annotation. Eg: 1,5[2],8[6]"
-    check_ORE_RAA(msg1, msg2);
+    check_ORE_RAA.call(this, msg1, msg2, 2);
   } else if(this.rule==="RAA") {
     var msg1 = "Annotation for " + this.rule + " should contain \
       exactly one non-discharging and one discharging(can be vacuous) \
@@ -153,7 +156,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
       exactly one non-discharging and one discharging(can be vacuous) \
       annotations. Did not find the discharging annotation. \
       Eg: 1,5[2] or 1,5[]"
-    check_ORE_RAA(msg1, msg2);
+    check_ORE_RAA.call(this, msg1, msg2, 1);
   }
 }
 
