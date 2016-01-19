@@ -15,7 +15,7 @@ module.exports = {
     "A"  : new AssumptionRule(),
     "∧E" : new ConjunctionElimRule(),
     "∧I" : new ConjunctionIntroRule(),
-//    "∨E" : new DisjunctionElimRule(),
+    "∨E" : new DisjunctionElimRule(),
     "∨I" : new DisjunctionIntroRule(),
     "→E" : new ImplicationElimRule(),
     "→I" : new ImplicationIntroRule(),

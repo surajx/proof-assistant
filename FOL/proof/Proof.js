@@ -5,7 +5,6 @@ var ProofGraph = require('./ProofGraph.js');
 var FOLParser = require('../parser/parser.js');
 var AssumptionRule = require('./rules/AssumptionRule.js');
 var compareFormule = require('../../util/util.js').compareFormule;
-var addEqualsToArrayPrototype = require('../../util/util.js').addEqualsToArrayPrototype;
 
 function Proof(premises, goal) {
   this.premises = premises;

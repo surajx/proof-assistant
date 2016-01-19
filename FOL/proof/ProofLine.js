@@ -54,7 +54,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     for (var i = 0; i<annotationsArr.length; i++) {
       var oneAnnotation = annotationsArr[i];
       oneAnnotation = oneAnnotation.replace(/ /g,'');
-      var withDischarge = oneAnnotation.match(/^(\d)\[(\d*)\]$/);
+      var withDischarge = oneAnnotation.match(/^(\d+)\[(\d*)\]$/);
       if(withDischarge!==null){
         if(this.depAssumptions.indexOf(withDischarge[2])>-1){
           throw "Discharged Assumption should not \
@@ -114,7 +114,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   var check_ORE_RAA = function(msg1, msg2, nd_count){
     var nonDischargeAssumption = -1;
     for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
-      if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
+      if(this.annotationsStr[i].match(/^(\d+)\[(\d*)\]$/)===null){
         nonDischargeAssumption = i;
         break;
       }
@@ -125,7 +125,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
     var cnt = 0;
     for (var i = this.annotationsStr.length - 1; i >= 0; i--) {
       if (i===nonDischargeAssumption) continue;
-      if(this.annotationsStr[i].match(/^(\d)\[(\d*)\]$/)===null){
+      if(this.annotationsStr[i].match(/^(\d+)\[(\d*)\]$/)===null){
         throw msg2;
       }
       cnt+=1;
@@ -134,7 +134,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   }
   if (this.rule==="→I" || this.rule==="¬I") {
     //We can index otherwise it would have thrown error before.
-    if(this.annotationsStr[0].match(/^(\d)\[(\d*)\]$/)===null){
+    if(this.annotationsStr[0].match(/^(\d+)\[(\d*)\]$/)===null){
       throw "Annotation for " + this.rule + " should be specified \
         in the format: premise line no[discharging assumption line no]. \
         Eg: 3[2]";
