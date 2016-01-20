@@ -30,6 +30,7 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
 
     $("#saveProofBtn").removeClass("btn-success");
     $("#saveProofBtn").addClass("btn-danger");
+    $("#saveProofBtn").click();
 }
 
 ns_proover.genProofLineForLno = function(givenLineNo){

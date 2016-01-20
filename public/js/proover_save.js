@@ -19,12 +19,14 @@ ns_proover.initiateSave = function($btn){
           $.toaster({ settings : {timeout: 8000} });
           $.toaster({ priority : 'danger',
             title : 'Server Message', message : 'Save Error: ' + data.err});
-          console.log(data.err);
         }
     },
     error: function (xhr, status, error) {
         $btn.button('reset');
-        console.log('Error: ' + JSON.stringify(error));
+        $.toaster({ settings : {timeout: 13000} });
+        $.toaster({ priority : 'danger',
+          title : 'Server Message', message : 'You are logged out! \
+            Please re-login in a different window to save current proof.'});
     },
   });
 }
