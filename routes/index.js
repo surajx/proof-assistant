@@ -5,8 +5,8 @@ var User = require('../models/User.js');
 var ProofModel = require('../models/Proof.js');
 
 var proofObjSanitize = require('../util/util.js').proofObjSanitize;
-var genNewProof = require('../FOL/proof/Proof.js').genNewProof;
-var validateProofServer = require('../FOL/proof/Proof.js').validateProofServer;
+var genNewProofAsync = require('../FOL/proof/Proof.js').genNewProofAsync;
+var validateProofAsync = require('../FOL/proof/Proof.js').validateProofAsync;
 var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
 /* TODO:
@@ -114,10 +114,12 @@ function requireLogin(req, res, next) {
 };
 
 router.get('/dashboard', requireLogin, function(req,res) {
-  //TODO: Fetch all the proofs the user has created and send as locals.
   ProofModel.find({userid:req.user.id, isDeleted:false}, function(err, proofs){
     var proofList = [];
-    //TODO: if err do something
+    if(err){
+      res.render('dashboard', {proofList: proofList, errmsg: "DB error!"});
+      return;
+    }
     if (proofs && proofs.length>0){
       proofs.forEach(function(proof){
         proofList.push({
@@ -133,27 +135,31 @@ router.get('/dashboard', requireLogin, function(req,res) {
 
 router.post('/proover/new', requireLogin, function(req,res){
   var proofName = req.body.proofName.trim().replace(/\s\s+/g, ' ');
-  var proofContainer = genNewProof(proofName);
-  if (proofContainer.status===false){
-    //TODO use proofContainer.err to display an error message in dashboard.
-    console.log(proofContainer.err);
-    res.redirect('/dashboard');
-    return;
-  }
-  var proof = proofContainer.proof;
-  var proofStatus = proofContainer.proofStatus;
-  var newProof = new ProofModel();
-  newProof.userid = req.user.id;
-  newProof.proofStatus = proofStatus;
-  newProof.proofName = proofName;
-  newProof.proofData = proof;
-  newProof.save(function(err, proof){
-    if (err) {
-      //TODO: Show an alert message that new proof creation resulted in an error.
+  genNewProofAsync(proofName, function(proofContainer){
+    if (proofContainer.status===false){
+      //TODO use proofContainer.err to display an
+      //error message in dashboard.
+      console.log(proofContainer.err);
       res.redirect('/dashboard');
-    } else {
-      res.redirect('/proover/'+proof.id)
+      return;
     }
+    var proof = proofContainer.proof;
+    var proofStatus = proofContainer.proofStatus;
+    var newProof = new ProofModel();
+    newProof.userid = req.user.id;
+    newProof.proofStatus = proofStatus;
+    newProof.proofName = proofName;
+    newProof.proofData = proof;
+    newProof.save(function(err, proof){
+      if (err) {
+        //TODO: Show an alert message that new proof creation
+        // resulted in an error.
+        console.log(err);
+        res.redirect('/dashboard');
+      } else {
+        res.redirect('/proover/'+proof.id)
+      }
+    });
   });
 });
 
@@ -170,26 +176,27 @@ router.get('/proover/:id', requireLogin, function(req,res){
 
 router.post('/proover/save/:id', requireLogin, function(req,res){
   var proof = proofObjSanitize(req.body);
-  var v_st = validateProofServer(proof);
-  if(!v_st.isProofValid) {
-    res.json({status: false, err: v_st.err});
-    return;
-  }
-  ProofModel.update({_id:req.params.id, userid:req.user.id, isDeleted:false},
-    {proofData: proof, proofStatus: v_st}, function(err, updateResp){
-      if(err) {
-        res.json({status: false, err: "DB error!"});
-        return;
-      }
-      if(updateResp.nModified===0 && updateResp.n===1) {
-        res.json({status: true, msg: "Nothing to save!"});
-        return;
-      }
-      if(updateResp.n===0) {
-        res.json({status: false, err: "Proof Not Found in DB!"});
-        return;
-      }
-      res.json({status: true, msg: "Save Successful!"});
+  validateProofAsync(proof, function(v_st){
+    if(!v_st.isProofValid) {
+      res.json({status: false, err: v_st.err});
+      return;
+    }
+    ProofModel.update({_id:req.params.id, userid:req.user.id, isDeleted:false},
+      {proofData: proof, proofStatus: v_st}, function(err, updateResp){
+        if(err) {
+          res.json({status: false, err: "DB error!"});
+          return;
+        }
+        if(updateResp.nModified===0 && updateResp.n===1) {
+          res.json({status: true, msg: "Nothing to save!"});
+          return;
+        }
+        if(updateResp.n===0) {
+          res.json({status: false, err: "Proof Not Found in DB!"});
+          return;
+        }
+        res.json({status: true, msg: "Save Successful!"});
+    });
   });
 });
 

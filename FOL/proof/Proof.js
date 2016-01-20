@@ -12,6 +12,12 @@ function Proof(premises, goal) {
   this.proofLines = [];
 }
 
+function validateProofAsync(proof, callback){
+  process.nextTick(function(){
+    callback(validateProofServer(proof));
+  });
+}
+
 function validateProofServer(proof){
   var goal = proof.goal.trim();
   //Check if received goal is valid.
@@ -123,6 +129,12 @@ function matchRule(ruleStr) {
   return rule;
 }
 
+function genNewProofAsync(proofName, callback){
+  process.nextTick(function(){
+    callback(genNewProof(proofName));
+  });
+}
+
 function genNewProof(proofName){
   //Double validation: Ideally when code reaches here, its already validate
   //at the client side for WFS.
@@ -171,6 +183,6 @@ function genNewProof(proofName){
   }
 }
 
-module.exports.validateProofServer = validateProofServer;
+module.exports.validateProofAsync = validateProofAsync;
 module.exports.validateProof = validateProof;
-module.exports.genNewProof = genNewProof;
+module.exports.genNewProofAsync = genNewProofAsync;
