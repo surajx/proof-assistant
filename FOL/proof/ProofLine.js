@@ -62,16 +62,18 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
             be part of Dependent Assumptions";
         }
         if(parseInt(withDischarge[1])>=parseInt(this.lineNo)){
-          throw "Annotation Assumption cannot be greate than or \
+          throw "Annotation Assumption cannot be greater than or \
             equal to current Line No: " + this.lineNo;
         }
         if(parseInt(withDischarge[2])>=parseInt(this.lineNo)){
-          throw "Discharges Assumption cannot be greate than or \
-            equal to current Line No: " + this.lineNo;
+          throw "Discharges Assumption "+ '['+withDischarge[2]+']' +
+            " cannot be greater than or equal to current Line No: " +
+            this.lineNo;
         }
-        if(parseInt(withDischarge[2])>=parseInt(withDischarge[1])) {
-          throw "Discharges Assumption cannot be greate than or \
-            equal to the participating annotation: " + withDischarge[1];
+        if(parseInt(withDischarge[2])>parseInt(withDischarge[1])) {
+          throw "Discharges Assumption "+ '['+withDischarge[2]+']' +
+            " cannot be greater than the participating annotation: " +
+            withDischarge[1];
         }
         this.annotations.push({
           annotation: withDischarge[1],

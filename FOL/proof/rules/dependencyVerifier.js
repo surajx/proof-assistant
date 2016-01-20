@@ -10,9 +10,21 @@ function dischargeVerifier(rulePremises, curProofLine){
         if (rulePremises[j].depAssumptions.indexOf(curAnnotations[i].discharge)<0){
           return {
             status:false,
-            err: "Invalid discharge assumption. The discharge assumption in annotation " +
-              curAnnotations[i].annotation + "[" + curAnnotations[i].discharge + "] is \
-              not part of the dependent assumptions of line: " + rulePremises[j].lineNo
+            err: "Invalid discharge assumption. The discharge \
+              assumption in annotation " + curAnnotations[i].annotation +
+              "[" + curAnnotations[i].discharge + "] is not part of \
+              the dependent assumptions of line: " +
+              rulePremises[j].lineNo
+          }
+        }
+      }
+      if (rulePremises[j].lineNo===curAnnotations[i].discharge){
+        if (rulePremises[j].rule!=="A"){
+          return {
+            status:false,
+            err: "Invalid discharge assumption. The discharge \
+              assumption in annotation " + curAnnotations[i].annotation +
+              "[" + curAnnotations[i].discharge + "] is not an assumptions"
           }
         }
       }
