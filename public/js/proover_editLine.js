@@ -6,22 +6,20 @@ ns_proover.launchModelForLno = function(line){
     lineArray.push($(this).find('span:first').text().trim());
   });
   lineArray.splice(-1,1);
-  $("#depAssumptions").val(lineArray[0]);
-  $("#formule").val(lineArray[2]);
-  $("#annotation").val(lineArray[3]);
-  $("#selectedRule").val(lineArray[4]);
+  $("#e_depAssumptions").val(lineArray[0]);
+  $("#e_formule").val(lineArray[2]);
+  $("#e_annotation").val(lineArray[3]);
+  $("#e_selectedRule").val(lineArray[4]);
 
   $("#modelLineNo").text(line);
   $('#myModalLabel').text("Edit Line: " + line);
-  $('#lineSaveBtn').removeClass("hidden");
-  $('#lineSubmitBtn').addClass("hidden");
-  $('#newLineModal').modal('show');
+  $('#editLineModal').modal('show');
 }
 
 ns_proover.addEdtLineListner = function(){
 
   $(".edt-btn").click(function(){
-    $('#errDiv').addClass( "hidden" );
+    $('#e_errDiv').addClass( "hidden" );
     ns_proover.launchModelForLno($(this).find(".hidden-lno").text());
   });
 
@@ -29,10 +27,10 @@ ns_proover.addEdtLineListner = function(){
     var updatingLine = $("#modelLineNo").text();
     if (isNaN(parseInt(updatingLine))) {
       ns_proover.showError("unable to find lineNo, try restarting \
-        proof or deleting till that line!");
+        proof or deleting till that line!", true);
       return;
     }
-    var proofLine = ns_proover.genProofLineForLno(updatingLine);
+    var proofLine = ns_proover.genProofLineForLno(updatingLine, true);
     if (proofLine===false) return;
     var oldProofLine = proof.proofLines[updatingLine-1];
     proof.proofLines[updatingLine-1] = proofLine;
@@ -47,7 +45,7 @@ ns_proover.addEdtLineListner = function(){
         $( '#proofStatus' ).addClass("label-danger");
         */
         proof.proofLines[updatingLine-1] = oldProofLine;
-        ns_proover.showError(v_st.err);
+        ns_proover.showError(v_st.err, true);
       } else {
         ns_proover.updateUIProofStatus(v_st);
       }
@@ -55,10 +53,10 @@ ns_proover.addEdtLineListner = function(){
         ns_proover.addProofLine(proofLine, updatingLine);
         //TODO: Update in server by ajax
         ns_proover.resetModal();
-        $('#newLineModal').modal('hide');
+        $('#editLineModal').modal('hide');
       }
     } catch (err){
-      ns_proover.showError(err);
+      ns_proover.showError(err, true);
     }
   });
 

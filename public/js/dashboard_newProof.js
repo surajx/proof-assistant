@@ -18,10 +18,12 @@ ns_dashboard.addNewProofListeners = function(){
       $( '#wfsErrDiv' ).removeClass( "hidden" );
       $('#wfsErrDiv').show();
       if (wfsCheck.err instanceof Array){
-        $('#wfsErrMsg').text(wfsCheck.err.join('\n'));
+        var wfsErrMsg = wfsCheck.err.join('\n');
       } else {
-        $('#wfsErrMsg').text(wfsCheck.err);
+        var wfsErrMsg = wfsCheck.err;
       }
+      $('#wfsErrMsg').text('[Parser Error]: Not a Well Formed \
+        sequent. ' + wfsErrMsg);
     }
   });
 }
