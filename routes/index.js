@@ -187,10 +187,11 @@ router.post('/proover/save/:id', requireLogin, function(req,res){
           res.json({status: false, err: "DB error!"});
           return;
         }
+        /* nModified not available in MongoDB 2.4.10
         if(updateResp.nModified===0 && updateResp.n===1) {
           res.json({status: true, msg: "Nothing to save!"});
           return;
-        }
+        }*/
         if(updateResp.n===0) {
           res.json({status: false, err: "Proof Not Found in DB!"});
           return;
@@ -210,11 +211,11 @@ router.post('/dashboard/delete/', requireLogin, function(req,res){
             res.json({status: false, err: "DB error!"});
             return;
           }
-          if(updateResp.nModified===0) {
+          if(updateResp.n===0) {
             res.json({status: false, err: "Proof Not found in DB!"});
             return;
           }
-          res.json({status: true, msg: updateResp.nModified});
+          res.json({status: true, msg: updateResp.n});
       });
     } else {
       res.json({status: false, err: "Nothing to delete."});
