@@ -2,7 +2,8 @@
 var app = require('../app');
 
 app.set('port', process.env.PROOF_PORT || 3000);
+app.set('ip', process.env.PROOF_IP || '127.0.0.1');
 
-var server = app.listen(app.get('port'), function() {
+var server = app.listen(app.get('port'), app.get('ip'),function() {
   console.log('Express server listening on port ' + server.address().port);
 });
