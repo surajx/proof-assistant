@@ -13,4 +13,11 @@ ns_dashboard.addMiscListeners = function(){
       $("#proofName").on("input propertychange paste", function(){
         dynamicTextFormInput.call(this)
       });
+
+      $(".proof-anchor").hover(function(){
+        $(".list-group-item").removeClass("proof-active");
+        $(this).parent().addClass("proof-active");
+      }, function(){
+        $(this).parent().removeClass("proof-active");
+      });
 }
