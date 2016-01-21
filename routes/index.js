@@ -49,7 +49,7 @@ router.get('/signup', isLoggedIn, function(req, res){
     errMsg = signupContext[0];
   }
   res.render('signup', {
-    title: 'Sign Up on Proof Assistant',
+    title: 'Sign Up',
     isSignupDirty: isSignupDirty,
     errMsg: errMsg
   });
@@ -129,7 +129,7 @@ router.get('/dashboard', requireLogin, function(req,res) {
         });
       });
     }
-    res.render('dashboard', {proofList: proofList});
+    res.render('dashboard', {proofList: proofList, title: 'Dashboard'});
   });
 });
 
@@ -169,7 +169,7 @@ router.get('/proover/:id', requireLogin, function(req,res){
       res.redirect('/dashboard');
     } else {
       var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
-      res.render('proover', {proofModel: proof, ruleList: ruleList});
+      res.render('proover', {proofModel: proof, ruleList: ruleList, title: 'Proover'});
     }
   });
 });
