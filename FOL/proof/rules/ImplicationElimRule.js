@@ -42,7 +42,7 @@ ImplicationElimRule.prototype.validate = function(proofGraph, curProofLine) {
     return true;
   } else {
     throw lnoErrStr + "The premises provided by the annotation does not entail, " +
-    curProofLine.formule + " by Implication Introduction rule.";
+    curProofLine.formule + " by Implication Elimination rule.";
   }
 }
 
