@@ -1,6 +1,17 @@
 if(ns_dashboard===undefined) var ns_dashboard = {};
 
+ns_dashboard.modelSubmitOnEnter = function(){
+  $('#newProofModal').keypress(function(e) {
+    if (e.which === 13) {
+      e.preventDefault();
+      $("#formSubmitBtn").click();
+    }
+  });
+}
+
 ns_dashboard.addMiscListeners = function(){
+
+      ns_dashboard.modelSubmitOnEnter();
 
       $("[data-hide]").on("click", function(){
         $(this).closest("." + $(this).attr("data-hide")).hide();
