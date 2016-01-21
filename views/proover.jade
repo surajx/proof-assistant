@@ -80,10 +80,11 @@ block content
                     each rule in ruleList
                       li: a.proof-rule(style="cursor: pointer;")= rule
             div.col-md-2
-              button.btn.btn-lg.btn-primary#lineSubmitBtn(type="button")
-                span.glyphicon.glyphicon-plus(aria-hidden="true")
-              button.btn.btn-lg.btn-danger#delLineBtn(type="button", style="margin-left: 20px" )
-                span.glyphicon.glyphicon-minus(aria-hidden="true")
+              div.row
+                button.btn.btn-lg.btn-primary#lineSubmitBtn(type="button")
+                  span.glyphicon.glyphicon-plus(aria-hidden="true")
+                button.btn.btn-lg.btn-danger#delLineBtn(type="button", style="margin-left: 20px" )
+                  span.glyphicon.glyphicon-minus(aria-hidden="true")
         div.alert.alert-danger.fade.in.hidden#errDiv
           a.close(href="#", data-hide="alert", aria-label="close") &times;
           p#errMsg
