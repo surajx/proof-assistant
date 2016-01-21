@@ -19,12 +19,7 @@ block content
   div.container
     div.jumbotron
       h3.text-center: span.label.label-primary= proofModel.proofName
-      button.btn.btn-lg.btn-primary#addNewLineBtn(type="button",
-      data-toggle="modal", data-target="#newLineModal")
-        span.glyphicon.glyphicon-plus(aria-hidden="true")
-      button.btn.btn-lg.btn-danger#delLineBtn(type="button", style="margin-left: 10px" )
-        span.glyphicon.glyphicon-minus(aria-hidden="true")
-      button.btn.btn-lg.btn-success#saveProofBtn(type="button", style="margin-left: 10px" data-loading-text="<i class='glyphicon glyphicon-hourglass' aria-hidden='true'></i>") Save
+      button.btn.btn-lg.btn-success#saveProofBtn(type="button", data-loading-text="<i class='glyphicon glyphicon-hourglass' aria-hidden='true'></i>") Save
       -var v_st = proofModel.proofStatus;
       if !v_st.isProofValid
         span.label.label-pill.label-danger.pull-right#proofStatus: h5#ps_h(style="color:white;") INVALID PROOF
@@ -57,34 +52,69 @@ block content
                 button.btn.btn-default.edt-btn(type="button", id="edt_btn_#{line.lineNo}")
                   span.glyphicon.glyphicon-edit
                   span.hidden.hidden-lno #{line.lineNo}
+      div.container
+        div.form-group.new-proof-line-form
+          div.row
+            div.col-md-2
+              input.form-control.input-lg#depAssumptions(type='text',
+              name='depAssumptions',
+              placeholder="Dependecies",
+              required=true, autofocus=true)
+            div.col-md-4
+              input.form-control.input-lg#formule(type='text', name='formule',
+              placeholder="Formule", required=true, autofocus=true)
+            div.col-md-2
+              input.form-control.input-lg#annotation(type='text', name='annotation',
+              placeholder="Annotations",
+              required=true, autofocus=true)
+            div.col-md-2
+              div.input-group
+                input.form-control.input-lg#selectedRule(type="text",
+                placeholder="Rule", aria-label="selectedRule")
+                div.input-group-btn.dropup
+                  button.btn.btn-default.dropdown-toggle.input-lg(type="button",
+                  id="dropdownMenu1", data-toggle="dropdown",
+                  aria-haspopup="true", aria-expanded="true") Rule
+                    span.caret
+                  ul.dropdown-menu.dropdown-menu-right(aria-labelledby="dropdownMenu1")
+                    each rule in ruleList
+                      li: a.proof-rule(style="cursor: pointer;")= rule
+            div.col-md-2
+              button.btn.btn-lg.btn-primary#lineSubmitBtn(type="button")
+                span.glyphicon.glyphicon-plus(aria-hidden="true")
+              button.btn.btn-lg.btn-danger#delLineBtn(type="button", style="margin-left: 20px" )
+                span.glyphicon.glyphicon-minus(aria-hidden="true")
+        div.alert.alert-danger.fade.in.hidden#errDiv
+          a.close(href="#", data-hide="alert", aria-label="close") &times;
+          p#errMsg
 
-  div.modal.fade#newLineModal(tabindex="-1", role="dialog",
+  div.modal.fade#editLineModal(tabindex="-1", role="dialog",
   aria-labelledby="myModalLabel")
     div.modal-dialog.modal-lg(role="document")
       div.modal-content
         div.modal-header
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
-          h4.modal-title#myModalLabel Add New Line
+          h4.modal-title#myModalLabel Edit Line
         div.modal-body
           div.form-group.new-proof-line-form
             div
               div.row
                 div.col-md-2
-                  input.form-control.input-lg#depAssumptions(type='text',
+                  input.form-control.input-lg#e_depAssumptions(type='text',
                   name='depAssumptions',
                   placeholder="Dependecies",
                   required=true, autofocus=true)
                 div.col-md-6
-                  input.form-control.input-lg#formule(type='text', name='formule',
+                  input.form-control.input-lg#e_formule(type='text', name='formule',
                   placeholder="Formule", required=true, autofocus=true)
                 div.col-md-2
-                  input.form-control.input-lg#annotation(type='text', name='annotation',
+                  input.form-control.input-lg#e_annotation(type='text', name='annotation',
                   placeholder="Annotations",
                   required=true, autofocus=true)
                 div.col-md-2
                   div.input-group
-                    input.form-control.input-lg#selectedRule(type="text",
+                    input.form-control.input-lg#e_selectedRule(type="text",
                     placeholder="Rule", aria-label="selectedRule")
                     div.input-group-btn
                       button.btn.btn-default.dropdown-toggle.input-lg(type="button",
@@ -93,12 +123,11 @@ block content
                         span.caret
                       ul.dropdown-menu.dropdown-menu-right(aria-labelledby="dropdownMenu1")
                         each rule in ruleList
-                          li: a.proof-rule(href="#")= rule
-          div.alert.alert-danger.fade.in.hidden#errDiv
+                          li: a.edt-proof-rule(style="cursor: pointer;")= rule
+          div.alert.alert-danger.fade.in.hidden#e_errDiv
             a.close(href="#", data-hide="alert", aria-label="close") &times;
-            p#errMsg
+            p#e_errMsg
         div.modal-footer
           span.hidden#modelLineNo
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
-          button.btn.btn-primary#lineSubmitBtn(type="button") Create
-          button.btn.btn-primary.hidden#lineSaveBtn(type="button") Save
+          button.btn.btn-primary#lineSaveBtn(type="button") Save

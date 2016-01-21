@@ -1,19 +1,34 @@
 if (ns_proover===undefined) var ns_proover={};
 
 ns_proover.modelSubmitOnEnter = function(){
-  $('#newLineModal').keypress(function(e) {
+  $('#editLineModal').keypress(function(e) {
     if (e.which === 13) {
-        if($("#lineSubmitBtn").hasClass("hidden")){
-          $("#lineSaveBtn").click();
-        } else if($("#lineSaveBtn").hasClass("hidden")) {
-          $("#lineSubmitBtn").click();
-        }
+      $("#lineSaveBtn").click();
     }
   });
+  $('#depAssumptions, #formule, #annotation, #selectedRule').keypress(function(e){
+    if (e.which === 13) {
+      $("#lineSubmitBtn").click();
+    }
+  });
+}
 
+ns_proover.scrollToBottom = function(){
+  $('html, body').animate({
+   scrollTop: $(document).height()-$(window).height()},
+   800
+  );
 }
 
 ns_proover.resetModal = function(){
+  $("#e_depAssumptions").val("");
+  $("#e_formule").val("");
+  $("#e_annotation").val("");
+  $("#e_selectedRule").val("");
+  $('#e_errDiv').addClass( "hidden" );
+}
+
+ns_proover.resetaddLine = function(){
   $("#depAssumptions").val("");
   $("#formule").val("");
   $("#annotation").val("");
@@ -21,10 +36,16 @@ ns_proover.resetModal = function(){
   $('#errDiv').addClass( "hidden" );
 }
 
-ns_proover.showError = function(err){
-  $('#errDiv').removeClass( "hidden" );
-  $('#errDiv').show();
-  $('#errMsg').text(err);
+ns_proover.showError = function(err, isEdit){
+  if(isEdit!==true){
+    $('#errDiv').removeClass( "hidden" );
+    $('#errDiv').show();
+    $('#errMsg').text(err);
+  } else {
+    $('#e_errDiv').removeClass( "hidden" );
+    $('#e_errDiv').show();
+    $('#e_errMsg').text(err);
+  }
 }
 
 ns_proover.removeAllLabelModifiers = function(){
@@ -46,6 +67,10 @@ ns_proover.addMiscListeners = function(){
     $(this).find('input:text:visible:first').focus();
   });
 
+  $(".edt-proof-rule").click(function() {
+    $("#e_selectedRule").val($(this).text());
+  });
+
   $(".proof-rule").click(function() {
     $("#selectedRule").val($(this).text());
   });
@@ -55,6 +80,14 @@ ns_proover.addMiscListeners = function(){
   });
 
   $("#selectedRule").on("input propertychange paste", function(){
+    dynamicTextFormInput.call(this)
+  });
+
+  $("#e_formule").on("input propertychange paste", function(){
+    dynamicTextFormInput.call(this)
+  });
+
+  $("#e_selectedRule").on("input propertychange paste", function(){
     dynamicTextFormInput.call(this)
   });
 

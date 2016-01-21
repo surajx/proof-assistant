@@ -5,6 +5,7 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
   if(updateLineNo===undefined){
     $('#proofTable').append('<tr class= "proof-line" \
       id="line_'+proofLine.lineNo+'"></tr>');
+    ns_proover.resetaddLine();
   }
   $('#line_'+proofLine.lineNo).html(
     "<td class='vert-align'><span>"+ proofLine.depAssumptions.join(',') +" \
@@ -24,25 +25,34 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
 
     $(".edt-btn").unbind();
     $(".edt-btn").click(function(){
-      $('#errDiv').addClass( "hidden" );
+      $('#e_errDiv').addClass( "hidden" );
       ns_proover.launchModelForLno($(this).find(".hidden-lno").text());
     });
 
     $("#saveProofBtn").removeClass("btn-success");
     $("#saveProofBtn").addClass("btn-danger");
     $("#saveProofBtn").click();
+    $("#depAssumptions").focus();
+    ns_proover.scrollToBottom();
 }
 
-ns_proover.genProofLineForLno = function(givenLineNo){
-  var depAssumptions = $("#depAssumptions").val();
-  var formule = $("#formule").val().trim().replace(/\s\s+/g, ' ');
-  var annotation = $("#annotation").val();
-  var selectedRule = $("#selectedRule").val();
+ns_proover.genProofLineForLno = function(givenLineNo, isEdit){
+  if (isEdit!==true){
+    var depAssumptions = $("#depAssumptions").val();
+    var formule = $("#formule").val().trim().replace(/\s\s+/g, ' ');
+    var annotation = $("#annotation").val();
+    var selectedRule = $("#selectedRule").val();
+  } else {
+    var depAssumptions = $("#e_depAssumptions").val();
+    var formule = $("#e_formule").val().trim().replace(/\s\s+/g, ' ');
+    var annotation = $("#e_annotation").val();
+    var selectedRule = $("#e_selectedRule").val();
+  }
   var lineNo = givenLineNo
   var FOLParser = require('FOLParser');
   var wffCheck = FOLParser.isWFF(formule);
   if (!wffCheck.status){
-    ns_proover.showError(wffCheck.err);
+    ns_proover.showError(wffCheck.err, isEdit);
     return false;
   }
   var FOLProofLine = require('FOLProofLine');
@@ -54,7 +64,7 @@ ns_proover.genProofLineForLno = function(givenLineNo){
     rule           : selectedRule
   });
   if (proofLineContainer.status!==true) {
-    ns_proover.showError(proofLineContainer.err);
+    ns_proover.showError(proofLineContainer.err, isEdit);
     return false;
   }
   return proofLineContainer.proofLine;
@@ -84,15 +94,6 @@ ns_proover.updateUIProofStatus = function(v_st){
 
 ns_proover.addNewLineListener = function(){
 
-  $("#addNewLineBtn").click(function(){
-    var curLineNo = parseInt($('#proofTable tr:last').find('.hidden-lno').text());
-    if (isNaN(curLineNo)) curLineNo = 0;
-    $('#myModalLabel').text("Add New Line: " + (curLineNo+1).toString());
-    $('#lineSaveBtn').addClass("hidden");
-    $('#lineSubmitBtn').removeClass("hidden");
-    ns_proover.resetModal();
-  });
-
   $("#lineSubmitBtn").click(function(){
     var curLineNo = parseInt($('#proofTable tr:last').find('.hidden-lno').text());
     if (isNaN(curLineNo)) curLineNo = 0;
@@ -117,9 +118,6 @@ ns_proover.addNewLineListener = function(){
       }
       if (v_st.isProofValid) {
         ns_proover.addProofLine(proofLine);
-        //TODO: Update in server by ajax
-        ns_proover.resetModal();
-        $('#newLineModal').modal('hide');
       }
     } catch (err){
       ns_proover.showError(err);
