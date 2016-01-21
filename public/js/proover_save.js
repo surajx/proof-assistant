@@ -1,7 +1,6 @@
 if (ns_proover===undefined) var ns_proover={};
 
 ns_proover.initiateSave = function($btn){
-  console.log(proof);
   $.ajax({
     url: '/proover/save/' + proofID,
     data: proof,

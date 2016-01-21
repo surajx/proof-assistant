@@ -104,7 +104,6 @@ ns_proover.addNewLineListener = function(){
     try {
       var FOLValidator = require('FOLValidator');
       var v_st = FOLValidator.validateProof(proof);
-      console.log(v_st);
       if(!v_st.isProofValid) {
         /*
         //Not allowing users to add proof lines that invalidate the proof.
