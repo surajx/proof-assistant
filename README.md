@@ -59,7 +59,7 @@ mongod --version
 sudo npm install -g bower
 sudo npm install -g forever
 bower --version #1.7.2
-forever --version#v0.15.1
+forever --version #v0.15.1
 
 #Configure nginx
 sudo rm /etc/nginx/sites-enabled/default
@@ -131,5 +131,5 @@ bower install
 
 #start proof-assistant using forever.
 #Change the value of PROOF_SESSION_SECRET env variable.
-export PROOF_NODE_ENV=staging && export PROOF_PORT=8998 && export PROOF_SESSION_SECRET=w9875hfswfslsfw49w48u && forever start bin/www
+export PROOF_NODE_ENV=staging && export PROOF_PORT=8998 && export PROOF_SESSION_SECRET=w9875hfswfslsfw49w48u && forever start -w bin/www
 ```
