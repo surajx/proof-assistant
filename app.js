@@ -26,8 +26,8 @@ app.set('view engine', 'jade');
 
 app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(logger('dev'));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '10mB'}));
+app.use(bodyParser.urlencoded({limit: '10mB', parameterLimit:10*1000*1000, extended: true}));
 app.use(session({
   cookieName: 'session',
   secret: config.session.secret,
