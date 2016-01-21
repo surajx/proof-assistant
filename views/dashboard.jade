@@ -26,20 +26,21 @@ block content
       if proofList.length>0
         div.list-group.proof-list
           each proof in proofList
-            a.list-group-item(href="/proover/"+proof.id, id=proof.id)
+            div.list-group-item(id=proof.id)
               input.del-check-box(type="checkbox", value=proof.id, name="toDelete", style="margin-right: 10px;")
-              strong.proof-line= proof.name
-              -var v_st = proof.status;
-              if !v_st.isProofValid
-                span.label.label-pill.label-danger.pull-right: h6#ps_h(style="color:white;") INVALID PROOF
-              else if !v_st.isPremiseMaintained
-                span.label.label-pill.label-info.pull-right: h6#ps_h(style="color:white;") MISSING PREMISE
-              else if !v_st.isGoalAttained
-                span.label.label-pill.label-warning.pull-right(style="vertical-align: middle;"): h6#ps_h(style="color:white;") GOAL NOT ATTAINED
-              else if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
-                span.label.label-pill.label-success.pull-right: h6#ps_h(style="color:white;") SUCCESS
-              else
-                span.label.label-pill.label-default.pull-right: h6#ps_h(style="color:white;") PROOF CURROPTED
+              a.proof-anchor(href="/proover/"+proof.id, style="color: inherit;text-decoration: none;")
+                strong.proof-line= proof.name
+                -var v_st = proof.status;
+                if !v_st.isProofValid
+                  span.label.label-pill.label-danger.pull-right: h6#ps_h(style="color:white;") INVALID PROOF
+                else if !v_st.isPremiseMaintained
+                  span.label.label-pill.label-info.pull-right: h6#ps_h(style="color:white;") MISSING PREMISE
+                else if !v_st.isGoalAttained
+                  span.label.label-pill.label-warning.pull-right(style="vertical-align: middle;"): h6#ps_h(style="color:white;") GOAL NOT ATTAINED
+                else if v_st.isProofValid && v_st.isPremiseMaintained && v_st.isGoalAttained
+                  span.label.label-pill.label-success.pull-right: h6#ps_h(style="color:white;") SUCCESS
+                else
+                  span.label.label-pill.label-default.pull-right: h6#ps_h(style="color:white;") PROOF CURROPTED
         div.hidden.text-center#noProofTxt You have no existing proofs, click on "New Proof" to create one.
       else
         div.text-center#noProofTxt You have no existing proofs, click on "New Proof" to create one.
