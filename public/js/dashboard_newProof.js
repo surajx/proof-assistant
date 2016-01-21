@@ -17,7 +17,11 @@ ns_dashboard.addNewProofListeners = function(){
     } else {
       $( '#wfsErrDiv' ).removeClass( "hidden" );
       $('#wfsErrDiv').show();
-      $('#wfsErrMsg').text(wfsCheck.err.join('\n'));
+      if (wfsCheck.err instanceof Array){
+        $('#wfsErrMsg').text(wfsCheck.err.join('\n'));
+      } else {
+        $('#wfsErrMsg').text(wfsCheck.err);
+      }
     }
   });
 }
