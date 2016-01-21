@@ -52,7 +52,8 @@ ns_proover.genProofLineForLno = function(givenLineNo, isEdit){
   var FOLParser = require('FOLParser');
   var wffCheck = FOLParser.isWFF(formule);
   if (!wffCheck.status){
-    ns_proover.showError(wffCheck.err, isEdit);
+    ns_proover.showError('[Parser Error]: Not a Well Formed \
+      formule. ' + wffCheck.err, isEdit);
     return false;
   }
   var FOLProofLine = require('FOLProofLine');
