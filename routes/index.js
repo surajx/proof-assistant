@@ -56,7 +56,7 @@ router.get('/signup', isLoggedIn, function(req, res){
 });
 
 router.post('/register', function(req,res) {
-  User.findOne({email:req.body.email}, function(err, user){
+  User.findOne({email:req.body.email.toLowerCase()}, function(err, user){
     if (err) {
       return next(err)
     }
@@ -65,10 +65,11 @@ router.post('/register', function(req,res) {
       res.redirect('/signup');
     } else {
       var newUser = new User();
-      newUser.email = req.body.email;
+      newUser.email = req.body.email.toLowerCase();
       newUser.password = req.body.password;
       newUser.save(function(err){
         if (err) {
+          console.log(err);
           req.flash("isSignupDirty", "Server error, try again later!");
           res.redirect('/signup');
         } else {
@@ -81,7 +82,7 @@ router.post('/register', function(req,res) {
 });
 
 router.post('/login', function(req, res, next){
-  User.findOne({email:req.body.email}, '+password',function(err, user){
+  User.findOne({email:req.body.email.toLowerCase()}, '+password',function(err, user){
     if (err) {
       return next(err)
     }
