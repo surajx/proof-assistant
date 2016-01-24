@@ -57,10 +57,6 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
       oneAnnotation = oneAnnotation.replace(/ /g,'');
       var withDischarge = oneAnnotation.match(/^(\d+)\[(\d*)\]$/);
       if(withDischarge!==null){
-        if(this.depAssumptions.indexOf(withDischarge[2])>-1){
-          throw "Discharged Assumption should not \
-            be part of Dependent Assumptions";
-        }
         if(parseInt(withDischarge[1])>=parseInt(this.lineNo)){
           throw "Annotation Assumption cannot be greater than or \
             equal to current Line No: " + this.lineNo;

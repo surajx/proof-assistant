@@ -20,11 +20,9 @@ ImplicationIntroRule.prototype.validate = function(proofGraph, curProofLine) {
 
   if (!dependencyVerifyObj.status) {
     throw lnoErrStr + dependencyVerifyObj.err;
-  } else if(dependencyVerifyObj.discharged) {
-    var verifierContainer =  dischargeVerifier(rulePremises, curProofLine);
-    if(!verifierContainer.status) {
-      throw lnoErrStr + verifierContainer.err;
-    }
+  } else if(!dependencyVerifyObj.discharged) {
+    throw lnoErrStr + "Discharge not specified, but Implication \
+      introduction rule should discharge."
   }
 
   var topLevelImplicants =  getTopLevelFormulasForConnective(curProofLine.formule, "→");
