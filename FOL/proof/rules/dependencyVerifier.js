@@ -1,98 +1,85 @@
 var addEqualsToArrayPrototype = require('../../../util/util.js').addEqualsToArrayPrototype;
 
-
-function dischargeVerifier(rulePremises, curProofLine){
-  var curAnnotations = curProofLine.annotations;
-  for (var i = curAnnotations.length - 1; i >= 0; i--) {
-    if(curAnnotations[i].discharge==='') continue;
-    for (var j = rulePremises.length - 1; j >= 0; j--) {
-      if (rulePremises[j].lineNo===curAnnotations[i].annotation){
-        if (rulePremises[j].depAssumptions.indexOf(curAnnotations[i].discharge)<0){
+function dependencyVerifier(rulePremises, curProofLine, rule){
+  if (Array.prototype.equals===undefined) addEqualsToArrayPrototype();
+  var calcDepAssumptions = [];
+  var curProofLineDep = curProofLine.depAssumptions;
+  var curAnnotationsStr = curProofLine.annotationsStr;
+  var dischargeArray = [];
+  for (var i = curAnnotationsStr.length - 1; i >= 0; i--) {
+    var tmpAnnotation = curAnnotationsStr[i].match(/^(\d+)\[(\d*)\]$/);
+    if(tmpAnnotation!==null) {
+      var premiseDep = [];
+      dischargeArray.push(tmpAnnotation[2]);
+      for (var j = rulePremises.length - 1; j >= 0; j--) {
+        if (rulePremises[j].lineNo===tmpAnnotation[1]){
+          premiseDep = premiseDep.concat(rulePremises[j].depAssumptions);
+          break;
+        }
+      };
+      var dischargePos = premiseDep.indexOf(tmpAnnotation[2]);
+      if (dischargePos>=0) {
+        premiseDep.splice(dischargePos, 1);
+      } else {
+        if (tmpAnnotation[2]!==''){
           return {
             status:false,
-            err: "Invalid discharge assumption. The discharge \
-              assumption in annotation " + curAnnotations[i].annotation +
-              "[" + curAnnotations[i].discharge + "] is not part of \
-              the dependent assumptions of line: " +
-              rulePremises[j].lineNo
+            err: "Invalid discharge assumption. The discharged assumption [" +
+              tmpAnnotation[2] + "] is not part of the dependent assumptions \
+              of premise at line: " + tmpAnnotation[1] + "."
           }
         }
       }
-      if (rulePremises[j].lineNo===curAnnotations[i].discharge){
+    } else {
+      var premiseDep = [];
+      for (var j = rulePremises.length - 1; j >= 0; j--) {
+        if (rulePremises[j].lineNo===curAnnotationsStr[i]) {
+          premiseDep = premiseDep.concat(rulePremises[j].depAssumptions);
+          break;
+        }
+      };
+    }
+    calcDepAssumptions = calcDepAssumptions.concat(premiseDep);
+  };
+
+  //Filter out duplicates and sort.
+  calcDepAssumptions = calcDepAssumptions.filter(function(elem, pos) {
+    return calcDepAssumptions.indexOf(elem) == pos;
+  });
+  calcDepAssumptions.sort(function(a, b){return parseInt(a)-parseInt(b)});
+  curProofLineDep.sort(function(a, b){return parseInt(a)-parseInt(b)});
+
+  for (var i = dischargeArray.length - 1; i >= 0; i--) {
+    for (var j = rulePremises.length - 1; j >= 0; j--) {
+      if(rulePremises[j].lineNo===dischargeArray[i]){
         if (rulePremises[j].rule!=="A"){
           return {
             status:false,
             err: "Invalid discharge assumption. The discharge \
-              assumption in annotation " + curAnnotations[i].annotation +
-              "[" + curAnnotations[i].discharge + "] is not an assumptions"
+              assumption: [" + dischargeArray[i] + "] is not an assumption"
           }
         }
       }
     };
   };
-  return {
-    status: true
-  }
-}
 
 
-function createDischargeArray (curProofLine) {
-    var annotations = curProofLine.annotations;
-    var dischargeArray = [];
-    for (var i = annotations.length - 1; i >= 0; i--) {
-        if (annotations[i].discharge!=='') {
-            dischargeArray.push(annotations[i].discharge);
-        }
-    };
-    dischargeArray.sort(function(a, b){return parseInt(a)-parseInt(b)});
-    return dischargeArray;
-}
-
-function dependencyVerifier(rulePremises, curProofLine){
-  if (Array.prototype.equals===undefined) addEqualsToArrayPrototype();
-  var curProofLineDep = curProofLine.depAssumptions;
-
-  //Collect all the assumptions of rule premises.
-  var premiseDepAssumptions = [];
-  for (var i = rulePremises.length - 1; i >= 0; i--) {
-    premiseDepAssumptions = premiseDepAssumptions.concat(rulePremises[i].depAssumptions);
-  }
-
-  //Filter out duplicates and sort.
-  premiseDepAssumptions = premiseDepAssumptions.filter(function(elem, pos) {
-    return premiseDepAssumptions.indexOf(elem) == pos;
-  });
-  premiseDepAssumptions.sort(function(a, b){return parseInt(a)-parseInt(b)});
-
-  //creating and array of discharges used.
-  var dischargeArray = createDischargeArray(curProofLine);
-
-  //If discharged, then remove the discharged assumptions from the assumptions
-  // of the rule premises.
-  if (dischargeArray.length>0){
-    var hasDischarged = true;
+  //For RAA the discharge is universal.
+  if(rule==="RAA") {
     for (var i = dischargeArray.length - 1; i >= 0; i--) {
-        var dischargePos = premiseDepAssumptions.indexOf(dischargeArray[i]);
-        //NOTE: this does not mean that the discharges assumption is for the
-        // correct premise, this has to be separately verified.
-        if (dischargePos>=0){
-            premiseDepAssumptions.splice(dischargePos, 1);
-        } else {
-            return {
-                status:false,
-                err: "Invalid discharge assumption. The discharged assumption [" +
-                  dischargeArray[i] + "] is not part of any dependent assumptions."
-            }
-        }
-    }
+      var dischargePos = calcDepAssumptions.indexOf(dischargeArray[i])
+      if(dischargePos>=0) {
+        calcDepAssumptions.splice(dischargePos, 1);
+      }
+    };
   }
 
   //Verify if the provided dependent assumptions for the proof line is equal
   //to the calculated dependent assumptions.
-  if (premiseDepAssumptions.equals(curProofLineDep))
+  if (calcDepAssumptions.equals(curProofLineDep))
     return {
         status: true,
-        discharged: hasDischarged
+        discharged: dischargeArray.length>0
     }
   return {
     status: false,
@@ -102,4 +89,3 @@ function dependencyVerifier(rulePremises, curProofLine){
 }
 
 module.exports.dependencyVerifier = dependencyVerifier;
-module.exports.dischargeVerifier = dischargeVerifier;

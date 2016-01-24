@@ -19,14 +19,11 @@ DisjunctionElimRule.prototype.validate = function(proofGraph, curProofLine){
       assumptions and one without. Eg: 1,5[2],8[6]";
   }
   var dependencyVerifyObj = dependencyVerifier(rulePremises, curProofLine);
-
   if (!dependencyVerifyObj.status) {
     throw lnoErrStr + dependencyVerifyObj.err;
-  } else if(dependencyVerifyObj.discharged) {
-    var verifierContainer =  dischargeVerifier(rulePremises, curProofLine);
-    if(!verifierContainer.status) {
-      throw lnoErrStr + verifierContainer.err;
-    }
+  } else if(!dependencyVerifyObj.discharged) {
+    throw lnoErrStr + "Discharge not specified, but disjunction \
+      introduction rule should discharge."
   }
 
   var dischargingPremises = [];
