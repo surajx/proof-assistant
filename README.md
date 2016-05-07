@@ -1,3 +1,5 @@
+> ANU CECS GitLab specific README
+
 # Development Environment Setup
 
 > I wanted to do a cross-platform work-flow with docker or vagrant, but that 
@@ -25,7 +27,7 @@ seeing a login page.
 # Development Work-Flow
 
 > To minimize setup overhead and to still adhere to a fair amount of SCM 
-etiquettes, I propose the following dev work-flow.
+etiquettes we'll have the following dev work-flow.
 
 * Do NOT push code directly to `master` branch.
 * Developers should checkout a new git branch for each feature implmentation 
@@ -38,11 +40,10 @@ and push the branch to the repository
   - Make sure that you do all your commits during your development 
   into this branch.
 * Once you have completed a feature and unit-tested your code, create a 
-[merge-request](https://gitlab.cecs.anu.edu.au/surajx/
-proof-assistant/merge_requests) in the GitLab repository and assign one of your 
+merge-request in the GitLab repository and assign one of your 
 peers for code-review.
-* Once the code has been reviewed, the code is merged into master and 
-deployed to the staging server(which is yet to be setup).
+* Once the code has been reviewed, it is merged into master and 
+deployed to the staging server.
 
 # Deployment Notes
 ```bash
@@ -113,7 +114,7 @@ ssh-add ~/.ssh/id_rsa
 #get ssh pub key to local clipboard <execute on a local terminal>
 ssh proofusr@150.203.186.140 "cat ~/.ssh/id_rsa.pub" | xclip -sel clip
 ```
-Add the deploy key currently in you clipboard to the GitLab repository [deploy-key](https://gitlab.cecs.anu.edu.au/surajx/proof-assistant/deploy_keys) section.
+Add the deploy key currently in you clipboard to the GitLab repository deploy-key section.
 ```bash
 #On 150.203.186.140 as proofusr
 #get source code from GitLab
