@@ -1,4 +1,6 @@
-> ANU CECS GitLab specific README
+## TODO
+* Writeup how to use the tool
+* Migrate issues from CECS Gitlab to Github
 
 # Development Environment Setup
 
