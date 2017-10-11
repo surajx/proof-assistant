@@ -164,15 +164,33 @@ router.post('/proover/new', requireLogin, function(req,res){
   });
 });
 
-router.get('/proover/:id', requireLogin, function(req,res){
-  ProofModel.findOne({_id:req.params.id, userid:req.user.id, isDeleted:false}, function(err, proof){
-    if (err || !proof) {
-      res.redirect('/dashboard');
-    } else {
-      var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
-      res.render('proover', {proofModel: proof, ruleList: ruleList, title: 'Proover'});
-    }
-  });
+router.get('/proover/:id', function(req,res){
+  if(req.user == undefined){
+    ProofModel.findOne({_id:req.params.id, isShareable:true, isDeleted:false}, function(err, proof){
+      if (err || !proof) {
+        res.redirect('/');
+      } else {
+        var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
+        res.render('proover', {proofModel: proof, ruleList: ruleList, title: 'Proover'});          
+      }
+    });
+  } else {
+    ProofModel.findOne({_id:req.params.id, userid:req.user.id, isDeleted:false}, function(err, proof){
+      if (err || !proof) {
+        ProofModel.findOne({_id:req.params.id, isShareable:true, isDeleted:false}, function(err, proof){
+          if (err || !proof) {
+            res.redirect('/dashboard');
+          } else {
+            var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
+            res.render('proover', {proofModel: proof, ruleList: ruleList, title: 'Proover'});          
+          }          
+        });
+      } else {
+        var ruleList = Object.keys(require('../FOL/proof/rules/rules.js'));
+        res.render('proover', {proofModel: proof, ruleList: ruleList, title: 'Proover'});
+      }
+    });
+  }
 });
 
 router.post('/proover/save/:id', requireLogin, function(req,res){
@@ -201,6 +219,35 @@ router.post('/proover/save/:id', requireLogin, function(req,res){
     });
   });
 });
+
+router.post('/proover/share/:id', requireLogin, function(req,res){
+  var proof = proofObjSanitize(req.body);
+  validateProofAsync(proof, function(v_st){
+    if(!v_st.isProofValid) {
+      res.json({status: false, err: v_st.err});
+      return;
+    }
+    ProofModel.update({_id:req.params.id, userid:req.user.id, isDeleted:false},
+      {proofData: proof, proofStatus: v_st}, function(err, updateResp){
+        if(err) {
+          res.json({status: false, err: "DB error!"});
+          return;
+        }
+        /* nModified not available in MongoDB 2.4.10
+        if(updateResp.nModified===0 && updateResp.n===1) {
+          res.json({status: true, msg: "Nothing to save!"});
+          return;
+        }*/
+        if(updateResp.n===0) {
+          res.json({status: false, err: "Proof Not Found in DB!"});
+          return;
+        }
+        res.json({status: true, msg: "Save Successful!"});
+    });
+  });
+});
+
+
 
 router.post('/dashboard/delete/', requireLogin, function(req,res){
   var deleteArr = req.body.delete;

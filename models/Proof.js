@@ -6,6 +6,7 @@ var proofSchema = new Schema({
   proofStatus: {type: Object, required: true},
   proofName: {type: String, required: true},
   proofData: { type: Object },
+  isShareable: { type: Boolean, default: false},
   isDeleted: { type: Boolean, default: false}
 });
 
