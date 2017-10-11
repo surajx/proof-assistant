@@ -60,6 +60,10 @@ block content
             div.alert.alert-danger.fade.in.hidden#wfsErrDiv
               a.close(href="#", data-hide="alert", aria-label="close") &times;
               p#wfsErrMsg
+            p.text-center(style="white-space: pre; font-size: 15px; color: #808080; font-weight:bold")
+              | Legend:&nbsp;&nbsp;\i:&nbsp;→&nbsp;&nbsp;&nbsp;\o:&nbsp;∨&nbsp;&nbsp;&nbsp;\a:&nbsp;∧&nbsp;&nbsp;&nbsp;\n:&nbsp;¬&nbsp;&nbsp;&nbsp;\e:&nbsp;⊢&nbsp;&nbsp;&nbsp;\t:&nbsp;⊤&nbsp;&nbsp;&nbsp;\f:&nbsp;⊥&nbsp;&nbsp;&nbsp;
+              | Eg:&nbsp;&nbsp;¬(p&nbsp;→&nbsp;q)&nbsp;&nbsp;⊢&nbsp;&nbsp;p&nbsp;∧&nbsp;¬q
+              | p&nbsp;∨&nbsp;q,&nbsp;p&nbsp;∨&nbsp;r,&nbsp;¬(q&nbsp;∧&nbsp;r&nbsp;)&nbsp;&nbsp;⊢&nbsp;&nbsp;p&nbsp;&nbsp;&nbsp;
         div.modal-footer
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
           button.btn.btn-primary#formSubmitBtn(type="button", disabled=true) Create
