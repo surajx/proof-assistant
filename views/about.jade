@@ -5,7 +5,12 @@ block content
     div.jumbotron
       h2: i.ion-android-checkmark-circle Proof Assistant
         small(style="font-size: 20px;") beta
-      p Proof Assistant is a platform to enable Logic students to write, verify, and store #[a(href="https://en.wikipedia.org/wiki/System_L") System L] style Natural Deduction proofs. Proofs are checked for correctness in real-time, and provides informative error messages. The project was developed as part of the #[a(href="http://l4f.cecs.anu.edu.au/") Logic4Fun] initiative during #[a(href="http://lss.cecs.anu.edu.au/") Logic Summer School], 2015.
+      p Proof Assistant is a platform to enable Logic students to write, 
+        | verify, and store #[a(href="https://en.wikipedia.org/wiki/System_L") System L] 
+        | style Natural Deduction proofs. Proofs are checked for correctness 
+        | in real-time, and provides informative error messages. The project 
+        | was developed as part of the #[a(href="http://l4f.cecs.anu.edu.au/") Logic4Fun] 
+        | initiative during #[a(href="http://lss.cecs.anu.edu.au/") Logic Summer School], 2015.
       p Powered by the following technologies:
       li Javascript
       li Node.js
@@ -20,13 +25,22 @@ block content
       h6 Advisor: Prof. #[a(href="https://users.cecs.anu.edu.au/~jks/") John Slaney]
       h3 Getting Started
       h4 Setup an Account
-      p #[a(href="/login") Login]/#[a(href="/signup") SignUp] with your email. E-mail is just a placeholder for the username, essentially you can give a random valid email and password as long as you can remember it. On the #[a(href="/signup") SignUp] page there is also an option to, validate reCAPTCHA, and click on the throwaway button to jumpstart you proofing escapades.
+      p #[a(href="/login") Login]/#[a(href="/signup") SignUp] with your email. 
+        | E-mail is just a placeholder for the username, essentially you can 
+        | give a random valid email and password as long as you can remember 
+        | it. On the #[a(href="/signup") SignUp] page there is also an option 
+        | to, validate reCAPTCHA, and click on the throwaway button to jumpstart 
+        | you proofing escapades.
       h4 Dashboard
-      p The dashboard is where you create new proofs, and also where your existing proofs are listed along with there current status.
+      p The dashboard is where you create new proofs, and also where your existing 
+        | proofs are listed along with there current status.
       center
         img.img-thumbnail(src="/img/dashboard.png")
       br
-      p The #[button.btn.btn-lg.btn-success(type="button") NEW PROOF] button brings up a pop-up dialogue where you can enter the #[a(href="https://en.wikipedia.org/wiki/Sequent") sequent] you want to prove. Typing the sequent is very easy, the following short-keys auto-convert to their equivalent logical connectives as you type.
+      p The #[button.btn.btn-lg.btn-success(type="button") NEW PROOF] button brings 
+        | up a pop-up dialogue where you can enter the #[a(href="https://en.wikipedia.org/wiki/Sequent") sequent] 
+        | you want to prove. Typing the sequent is very easy, the following short-keys 
+        | auto-convert to their equivalent logical connectives as you type.
         li \n:&nbsp;&nbsp;¬&nbsp;(<u><b>n</b></u>egation)
         li \a:&nbsp;&nbsp;∧&nbsp;(<u><b>a</b></u>nd)
         li \o:&nbsp;&nbsp;∨&nbsp;(<u><b>o</b></u>r)
@@ -34,15 +48,30 @@ block content
         li \e:&nbsp;&nbsp;⊢&nbsp;(<u><b>e</b></u>ntails)
         li \t:&nbsp;&nbsp;⊤&nbsp;(<u><b>t</b></u>rue)
         li \f:&nbsp;&nbsp;⊥&nbsp;(<u><b>f</b></u>alse)
-      p Example: The sequent "¬(p → q) ⊢ p ∧ ¬q" should be typed as "\n(p \i q) \e p \a \nq". It may look daunting at first, but as you type, it'll becomes natural.
+      p Example: The sequent "¬(p → q) ⊢ p ∧ ¬q" should be typed as 
+        | "\n(p \i q) \e p \a \nq". It may look daunting at first, but as you 
+        | type, it'll becomes natural.
       center
         img.img-thumbnail(src="/img/create_new_proof.png")
       br
       h3 Proof Page
-      p This is the page where you actually write the proof. All premises of the sequent is auto-populated for you as assumption lines.
+      p This is the page where you actually write the proof. All premises of 
+        | the sequent is auto-populated for you as assumption lines.
       center
         img.img-thumbnail(src="/img/proof_page.png")
-      p The next proof line is entered using the fields provided at the bottom. The same short-keys mentioned earlier can be used to type in the connectives, Also, it is not necessary to press the #[button.btn.btn-primary(type="button"): span.glyphicon.glyphicon-plus(aria-hidden="true")] every time, hitting the enter key submits your proof line for validation. If you dont know what these fields are please read the excellent #[a(href="http://users.cecs.anu.edu.au/~jks/LogicNotes/index.html") introduction] to Propositional Logic and System L style Natural Deduction proofs by Prof. John Slaney.
+      p The next proof line is entered using the fields provided at the bottom. 
+        | The same short-keys mentioned earlier can be used to type in the 
+        | connectives. Also, it is not necessary to press the #[button.btn.btn-primary(type="button"): span.glyphicon.glyphicon-plus(aria-hidden="true")] 
+        | every time, pressing the enter key on any of the input fields submits 
+        | your proof line for validation. If you dont know what these fields are 
+        | please read the excellent #[a(href="http://users.cecs.anu.edu.au/~jks/LogicNotes/index.html") introduction] 
+        | to Propositional Logic and System L style Natural Deduction proofs by Prof. John Slaney.
+      p The platform also provides the ability to delete or edit rows, provided the 
+        | change does not break the validity of the proof. When a proof line is 
+        | deleted or edited the proof is <u>not</u> auto-saved on the server. 
+        | You can see that the SAVE button would be now red in color, indicating 
+        | an unsaved proof.
+      br
       h5 Error Messages
       p Submission of the new proof line triggers validation of the entire proof. Only if the entire proof is valid, the new proof line is added. In case of an invalid proof line, a corresponding error message is displayed.
       center
