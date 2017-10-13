@@ -24,7 +24,7 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-router.get('/', isLoggedIn, function(req, res) {
+router.get('/login', isLoggedIn, function(req, res) {
   var loginContext = req.flash('isLoginDirty');
   var isLoginDirty = false;
   if (loginContext.length > 0) {
@@ -34,6 +34,20 @@ router.get('/', isLoggedIn, function(req, res) {
     title: 'Login to Proof Assistant',
     isLoginDirty: isLoginDirty
   });
+});
+
+
+router.get('/', isLoggedIn, function(req, res) {
+  // var loginContext = req.flash('isLoginDirty');
+  // var isLoginDirty = false;
+  // if (loginContext.length > 0) {
+  //   isLoginDirty = loginContext[0]
+  // }
+  // res.render('login', {
+  //   title: 'Login to Proof Assistant',
+  //   isLoginDirty: isLoginDirty
+  // });
+  res.render('about', {title: 'About Proof Assistant'})
 });
 
 router.get('/about', function(req, res) {
