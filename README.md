@@ -54,7 +54,7 @@ Enjoy Natural Deductions!
 
   * Provide a legend to display short-keys for printing logical connectives (#15)
   * Have a dedicated top-level page explaining how-to used the site (#11).
-* **Remove Login Wall**: The landing page is a login page. I think this discourages first time visitors from trying out the platform. Maybe there should be a landing page that just jumps right into the proof writing page.
+* **Remove Login Wall**: I think needing to login discourages first time visitors from trying out the platform. Maybe there should be a landing page that just jumps right into the proof writing page.
 
 ## Software Stack
 * Javascript
