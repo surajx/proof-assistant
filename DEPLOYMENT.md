@@ -85,5 +85,7 @@ bower install
 
 #start proof-assistant using forever.
 #Change the value of PROOF_SESSION_SECRET env variable.
-export PROOF_NODE_ENV=staging && export PROOF_PORT=8998 && export PROOF_SESSION_SECRET=w9875hfswfslsfw49w48u && forever start -w bin/www
+export PROOF_NODE_ENV=staging && export PROOF_PORT=8998 && \
+  export PROOF_SESSION_SECRET=w9875hfswfslsfw49w48u && \
+  export RECAPTCHA_SITE_SECRET=siteSecret && forever start -w bin/www
 ```

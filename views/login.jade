@@ -1,5 +1,8 @@
 extends layout
 
+block append js
+  script(src='https://www.google.com/recaptcha/api.js')
+  script(src='/js/login_util.js')
 block content
   div.container
     div.center-form.panel
@@ -18,9 +21,27 @@ block content
               strong Error!
               p Invalid Email or Password.
           button.btn.btn-block.btn-success(type='submit') Log in
-          div.signup-or-separator
-            h6.text or
-            hr
-          p.text-center.text-muted
-            small Don't have an account yet?&nbsp;
-              a(href="/signup") Sign Up
+        br
+        div.signup-or-separator
+          h6.text OR
+          hr
+        h4.text-center: i.ion-person-add &nbsp;Sign Up
+        form.form-signin(action='/register', method='post')
+          div.form-group.has-feedback
+            input.form-control.input-lg#supEmail(type='email', name='email', placeholder="Email", required=true, autofocus=true)
+            span.ion-at.form-control-feedback
+          div.form-group.has-feedback
+            input.form-control.input-lg#supPass(type='password', name='password', placeholder="Password", required=true)
+            span.ion-key.form-control-feedback
+          div.g-recaptcha(style="transform:scale(0.945);-webkit-transform:scale(0.945);transform-origin:0 0;-webkit-transform-origin:0 0;", data-sitekey="6Lc5VzQUAAAAAPfATvrGumvCp6XHNnNvPKRAsmf0")
+          if isSignupDirty
+            div.alert.alert-danger.fade.in
+              a.close(href="#", data-dismiss="alert", aria-label="close") &times;
+              strong Error!
+              p= errMsg
+          button.btn.btn-block.btn-primary(type='submit') Sign Up
+          //- p.text-center.text-muted
+          //-   small By clicking on Sign up, you agree to &nbsp;
+          //-     a(href="#") terms &amp; conditions
+          //-     | &nbsp;and&nbsp;
+          //-     a(href="#") Privacy Policy          

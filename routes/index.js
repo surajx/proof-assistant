@@ -9,6 +9,11 @@ var genNewProofAsync = require('../FOL/proof/Proof.js').genNewProofAsync;
 var validateProofAsync = require('../FOL/proof/Proof.js').validateProofAsync;
 var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
+var config = require('../config');
+var reCAPTCHA=require('recaptcha2');
+
+recaptcha=new reCAPTCHA(config.recaptcha);
+
 /* TODO:
 * (05/01/16)Brain - This file is bloated with stuff from all over the place
 * (05/01/16)Hands - Tomorrow!
@@ -24,15 +29,21 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-router.get('/login', isLoggedIn, function(req, res) {
-  var loginContext = req.flash('isLoginDirty');
-  var isLoginDirty = false;
-  if (loginContext.length > 0) {
-    isLoginDirty = loginContext[0]
+function flashContext(flashVarContext){
+  if (flashVarContext.length > 0) {
+    console.log(flashVarContext);
+    return flashVarContext[0];
+  } else {
+    return false;
   }
+}
+
+router.get('/login', isLoggedIn, function(req, res) {
   res.render('login', {
     title: 'Login to Proof Assistant',
-    isLoginDirty: isLoginDirty
+    isLoginDirty: flashContext(req.flash('isLoginDirty')),
+    isSignupDirty: flashContext(req.flash('isSignupDirty')),
+    errMsg: flashContext(req.flash('errMsg'))
   });
 });
 
@@ -54,44 +65,54 @@ router.get('/about', function(req, res) {
   res.render('about', {title: 'About Proof Assistant'})
 });
 
-router.get('/signup', isLoggedIn, function(req, res){
-  var signupContext = req.flash('isSignupDirty')
-  var isSignupDirty = false;
-  var errMsg = "";
-  if (signupContext.length>0){
-    isSignupDirty = true;
-    errMsg = signupContext[0];
-  }
-  res.render('signup', {
-    title: 'Sign Up',
-    isSignupDirty: isSignupDirty,
-    errMsg: errMsg
-  });
-});
+// router.get('/signup', isLoggedIn, function(req, res){
+//   var signupContext = req.flash('isSignupDirty')
+//   var isSignupDirty = false;
+//   var errMsg = "";
+//   if (signupContext.length>0){
+//     isSignupDirty = true;
+//     errMsg = signupContext[0];
+//   }
+//   res.render('signup', {
+//     title: 'Sign Up',
+//     isSignupDirty: isSignupDirty,
+//     errMsg: errMsg
+//   });
+// });
 
 router.post('/register', function(req,res) {
-  User.findOne({email:req.body.email.toLowerCase()}, function(err, user){
-    if (err) {
-      return next(err)
-    }
-    if (user) {
-      req.flash("isSignupDirty", "Email already taken!");
-      res.redirect('/signup');
-    } else {
-      var newUser = new User();
-      newUser.email = req.body.email.toLowerCase();
-      newUser.password = req.body.password;
-      newUser.save(function(err){
-        if (err) {
-          console.log(err);
-          req.flash("isSignupDirty", "Server error, try again later!");
-          res.redirect('/signup');
-        } else {
-          req.session.user = newUser;
-          res.redirect('/dashboard');
-        }
-      });
-    }
+  recaptcha.validateRequest(req)
+  .then(function(){
+    User.findOne({email:req.body.email.toLowerCase()}, function(err, user){
+      if (err) {
+        return next(err)
+      }
+      if (user) {
+        req.flash("isSignupDirty", true);
+        req.flash("errMsg", "Email already taken!");
+        res.redirect('/login');
+      } else {
+        var newUser = new User();
+        newUser.email = req.body.email.toLowerCase();
+        newUser.password = req.body.password;
+        newUser.save(function(err){
+          if (err) {
+            console.log(err);
+            req.flash("isSignupDirty", true);
+            req.flash("errMsg", "Server error, try again later!");
+            res.redirect('/login');
+          } else {
+            req.session.user = newUser;
+            res.redirect('/dashboard');
+          }
+        });
+      }
+    });    
+  })
+  .catch(function(errorCodes){
+    req.flash("isSignupDirty", true);
+    req.flash("errMsg", "Please Validate reCAPTCHA!");
+    res.redirect('/login');
   });
 });
 
@@ -102,14 +123,14 @@ router.post('/login', function(req, res, next){
     }
     if (!user) {
         req.flash('isLoginDirty', true);
-        res.redirect('/');
+        res.redirect('/login');
     } else {
       if (req.body.password === user.password) {
         req.session.user = user;
         res.redirect('/dashboard');
       } else {
         req.flash('isLoginDirty', true);
-        res.redirect('/');
+        res.redirect('/login');
       }
     }
   });
@@ -117,12 +138,12 @@ router.post('/login', function(req, res, next){
 
 router.get('/logout', function(req, res) {
   req.session.reset();
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 function requireLogin(req, res, next) {
   if (!req.user) {
-    res.redirect('/');
+    res.redirect('/login');
   } else {
     next();
   }

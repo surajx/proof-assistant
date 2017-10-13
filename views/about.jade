@@ -11,7 +11,7 @@ block content
         | in real-time, and provides informative error messages. The project 
         | was developed as part of the #[a(href="http://l4f.cecs.anu.edu.au/") Logic4Fun] 
         | initiative during #[a(href="http://lss.cecs.anu.edu.au/") Logic Summer School], 2015.
-      p Powered by the following technologies:
+      h4 Software Stack
       li Javascript
       li Node.js
       li MongoDB
@@ -19,18 +19,16 @@ block content
       li Bootstrap
       li Jade
       br
-      h6 Developed by:
+      h4 Developed by:
       li #[a(href="https://www.surajx.in/") Suraj Narayanan Sasikumar]
       li Boris Repasky
       h6 Advisor: Prof. #[a(href="https://users.cecs.anu.edu.au/~jks/") John Slaney]
       h3 Getting Started
       h4 Setup an Account
-      p #[a(href="/login") Login]/#[a(href="/signup") SignUp] with your email. 
+      p #[a(href="/login") Login/SignUp] with any valid email.
         | E-mail is just a placeholder for the username, essentially you can 
         | give a random valid email and password as long as you can remember 
-        | it. On the #[a(href="/signup") SignUp] page there is also an option 
-        | to, validate reCAPTCHA, and click on the throwaway button to jumpstart 
-        | you proofing escapades.
+        | it.
       h4 Dashboard
       p The dashboard is where you create new proofs, and also where your existing 
         | proofs are listed along with there current status.
@@ -73,12 +71,23 @@ block content
         | an unsaved proof.
       br
       h5 Error Messages
-      p Submission of the new proof line triggers validation of the entire proof. Only if the entire proof is valid, the new proof line is added. In case of an invalid proof line, a corresponding error message is displayed.
+      p Submission of the new proof line triggers validation of the entire proof. 
+        | Only if the entire proof is valid, the new proof line is added. In 
+        | case of an invalid proof line, a corresponding error message is displayed.
       center
         img.img-thumbnail(src="/img/error_message.png")
       br
       h5 Features
-      p The proof is validated in-browser, i.e. the proof is not sent to the server each time a line is added. This allows fast verification of large proofs and also the ability to use the tool offline. If an internet connection is available, any change made to the proof is auto-saved on the server. The colour of the "SAVE" button indicates whether the proof was successfully saved on the server or not. #[button.btn.btn-success(type="button") Save] indicates that the latest proof is saved, while #[button.btn.btn-danger(type="button") Save] indicates that there are some changes in the proof that are not saved in the server. Note that the proof is also validated on the server-side as well on each save request.
+      p The proof is validated in-browser, i.e. the proof is not sent to the 
+        | server each time a line is added. This allows fast verification of large 
+        | proofs and also the ability to use the tool offline. If an internet 
+        | connection is available, any change made to the proof is auto-saved 
+        | on the server. The colour of the "SAVE" button indicates whether the 
+        | proof was successfully saved on the server or not. #[button.btn.btn-success(type="button") Save] 
+        | indicates that the latest proof is saved, while #[button.btn.btn-danger(type="button") Save] 
+        | indicates that there are some changes in the proof that are not saved 
+        | in the server. Note that the proof is also validated on the server-side 
+        | as well on each save request.
       br
       p When the line that completes the proof is entered, and the proof is validated, the status of the proof changes to "SUCCESS".
       center
