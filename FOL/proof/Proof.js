@@ -48,22 +48,32 @@ function validateProofServer(proof){
       }
     }
   };
-  return validateProof(proof);
+  var validateProofStatus;
+  for (var i = proof.proofLines.length; i >= 1; i--) {
+    validateProofStatus = validateProof(proof, i);
+    if(!validateProofStatus.isProofValid) return validateProofStatus;
+  }
+  return validateProofStatus;
 }
 
-function validateProof(proof) {
+function validateProof(proof, prfLineLen) {
+  if(!prfLineLen){
+    prfLineLen = proof.proofLines.length
+  }
   //TODO: check if some malicious data can throw DFS_VALIDATE into
   //a infinite recursive loop.
-  var prfLineLen = proof.proofLines.length;
   var goal = proof.goal;
   var isProofValid = true;
   if (prfLineLen>0) {
     var proofGraph = new ProofGraph(proof.proofLines);
-    var lastProoLineFormule = proof.proofLines[prfLineLen-1].formule;
+    var lastProoLineFormule = proof.proofLines[proof.proofLines.length-1].formule;
 
     //Checking that the last line is derived using a graph data structure.
     try {
-      isProofValid = DFS_VALIDATE(proofGraph, proof.proofLines[prfLineLen-1]);
+      for (var i = proof.proofLines.length; i >= prfLineLen; i--) {
+        isProofValid = DFS_VALIDATE(proofGraph, proof.proofLines[i-1]);
+        if(!isProofValid) break;
+      }
     } catch (err) {
       console.log(err);
       return {
@@ -91,7 +101,7 @@ function validateProof(proof) {
   if(lastProoLineFormule!==undefined){
     isGoalAttained = compareFormule(goal,lastProoLineFormule);
     if (isGoalAttained) {
-      var lastLineDepAssumptions = proof.proofLines[prfLineLen-1].depAssumptions;
+      var lastLineDepAssumptions = proof.proofLines[proof.proofLines.length-1].depAssumptions;
       for (var i = lastLineDepAssumptions.length - 1; i >= 0; i--) {
         if (premiseDepAssumptions.indexOf(lastLineDepAssumptions[i])<0) {
           isGoalAttained = false;

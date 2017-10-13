@@ -36,7 +36,7 @@ ns_proover.addEdtLineListner = function(){
     proof.proofLines[updatingLine-1] = proofLine;
     try {
       var FOLValidator = require('FOLValidator');
-      var v_st = FOLValidator.validateProof(proof);
+      var v_st = FOLValidator.validateProof(proof, updatingLine);
       if(!v_st.isProofValid) {
         /*
         //Not allowing users to add proof lines that invalidate the proof.
