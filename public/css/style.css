@@ -6,6 +6,14 @@ a {
   color: #3f729b;
 }
 
+.liFont {
+  font-size: 18px
+}
+
+.jumbotron .pFont {
+  font-size: 18px
+}
+
 a:hover {
   color: #1c5380;
 }
