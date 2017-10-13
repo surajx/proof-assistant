@@ -29,9 +29,14 @@ ns_proover.addProofLine = function (proofLine, updateLineNo) {
       ns_proover.launchModelForLno($(this).find(".hidden-lno").text());
     });
 
-    $("#saveProofBtn").removeClass("btn-success");
-    $("#saveProofBtn").addClass("btn-danger");
-    $("#saveProofBtn").click();
+    if(updateLineNo===undefined){
+      $("#saveProofBtn").removeClass("btn-success");
+      $("#saveProofBtn").addClass("btn-danger");
+      $("#saveProofBtn").click();
+    } else {
+      $("#saveProofBtn").removeClass("btn-success");
+      $("#saveProofBtn").addClass("btn-danger");
+    }
     $("#depAssumptions").focus();
     ns_proover.scrollToBottom();
 }
@@ -91,6 +96,9 @@ ns_proover.updateUIProofStatus = function(v_st){
     ns_proover.removeAllLabelModifiers();
     $( '#proofStatus' ).addClass("label-default");
   }
+  console.log(v_st);  
+  proofModel.proofStatus = v_st;
+  console.log(proofModel.proofStatus);
 }
 
 ns_proover.addNewLineListener = function(){

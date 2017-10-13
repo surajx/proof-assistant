@@ -19,13 +19,13 @@ html(lang='en')
       div.container
         ul.nav.navbar-nav
           a.navbar-brand(href="/"): i.ion-android-checkmark-circle &nbsp;Proof Assistant
-          li: a(href="/about") About
           if user
             li: a(href="/dashboard") Dashboard
             li: a(href="/logout") Logout
           else
-            li: a(href="/") Log in
-            li: a(href="/signup") Sign up
+            li: a(href="/login") Log in
+            li: a(href="/login") Sign up
+          li: a(href="/about") About
         ul.nav.navbar-nav.navbar-right
           if user
             li: a(href="/dashboard") #{user.email}&nbsp;&nbsp;

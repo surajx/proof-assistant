@@ -14,8 +14,11 @@ gulp.task('develop', function () {
   nodemon({
     script: 'bin/www',
     ext: 'js jade coffee',
-    stdout: false
-  }).on('readable', function () {
+    stdout: false,
+    ignore: [ "parserBundle.js" ]
+  })
+  .on('restart', ['browserify'])
+  .on('readable', function () {
     this.stdout.on('data', function (chunk) {
       if(/^Express server listening on port/.test(chunk)){
         livereload.changed(__dirname);

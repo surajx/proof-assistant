@@ -5,7 +5,7 @@ function ProofLine(depAssumptions, lineNo, formule, annotations, rule){
   if (rule==='' && annotations!=="A") {
     throw "The proof line does not have a valid Rule.";
   }
-
+  rule = rule.trim().replace(/\s/g, '');
   formule = formule.trim().replace(/\s\s+/g, ' ');
   var wffCheck = parser.isWFF(formule);
   if (wffCheck.status===false){

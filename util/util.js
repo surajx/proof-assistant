@@ -32,7 +32,7 @@ function addEqualsToArrayPrototype() {
 }
 
 function compareFormule(formule1, formule2){
-    return formule1.replace(/ /g,'')===formule2.replace(/ /g,'')
+    return formule1.replace(/\s/g,'')===formule2.replace(/\s/g,'')
 }
 
 function proofObjSanitize(proof){
