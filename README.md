@@ -2,6 +2,28 @@
 
 An online platform to enable Logic students to write, verify, and store [System L](https://en.wikipedia.org/wiki/System_L) style Natural Deduction proofs. Proofs are checked for correctness in real-time, and provides informative error messages. The project was developed as part of the [Logic4Fun](https://l4f.cecs.anu.edu.au/) initiative during [Logic Summer School](lss.cecs.anu.edu.au), 2015.
 
+## TODO
+
+* **Documentation**: The code-base has near to none documentation. This is uncharacteristic of me, but the circumstances were such that not spending time for documentation made sense. Now it does not (#7).
+* **UX design**: Improve the usability of the interface.
+
+  * Provide a legend to display short-keys for printing logical connectives (#15)
+  * Have a dedicated top-level page explaining how-to used the site (#11).
+* **Remove Login Wall**: I think needing to login discourages first time visitors from trying out the platform. Maybe there should be a landing page that just jumps right into the proof writing page.
+
+## Software Stack
+* Javascript
+* Node.js
+* MongoDB
+* ANTLR4
+* Bootstrap
+* Jade
+
+## Contributors
+
+* [Suraj Narayanan Sasikumar](https://www.surajx.in)
+* Boris Repasky
+
 ## Getting Started
 
 ### Setup an Account
@@ -46,25 +68,3 @@ When the line that completes the proof is entered, and the proof is validated, t
 ![Success](/public/img/write_proof.png)
 
 Enjoy Natural Deductions!
-
-## TODO
-
-* **Documentation**: The code-base has near to none documentation. This is uncharacteristic of me, but the circumstances were such that not spending time for documentation made sense. Now it does not (#7).
-* **UX design**: Improve the usability of the interface.
-
-  * Provide a legend to display short-keys for printing logical connectives (#15)
-  * Have a dedicated top-level page explaining how-to used the site (#11).
-* **Remove Login Wall**: I think needing to login discourages first time visitors from trying out the platform. Maybe there should be a landing page that just jumps right into the proof writing page.
-
-## Software Stack
-* Javascript
-* Node.js
-* MongoDB
-* ANTLR4
-* Bootstrap
-* Jade
-
-## Contributors
-
-* [Suraj Narayanan Sasikumar](https://github.com/surajx)
-* Boris Repasky
