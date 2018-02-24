@@ -2,6 +2,14 @@
 
 An online platform to enable Logic students to write, verify, and store [System L](https://en.wikipedia.org/wiki/System_L) style Natural Deduction proofs. Proofs are checked for correctness in real-time, and provides informative error messages. The project was developed as part of the [Logic4Fun](https://l4f.cecs.anu.edu.au/) initiative during [Logic Summer School](lss.cecs.anu.edu.au), 2015.
 
+## Features
+* Real-time and in-browser proof validation
+* Server-side proof validation during save using Isomorphic Javascript
+* Ability to continue writing verified proofs even when the Internet connection is lost
+* User account to save and retrieve proofs
+* Informative error messages
+* Fast and easy way of typing logic statements
+
 ## Software Stack
 * Javascript
 * Node.js
