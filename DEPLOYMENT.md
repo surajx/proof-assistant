@@ -67,18 +67,18 @@ ssh-add ~/.ssh/id_rsa
 #get ssh pub key to local clipboard <execute on a local terminal>
 ssh proofusr@150.203.186.140 "cat ~/.ssh/id_rsa.pub" | xclip -sel clip
 ```
-Add the deploy key currently in you clipboard to the GitLab repository deploy-key section.
+Add the deploy key currently in you clipboard to the GitHub repository deploy-key section.
 ```bash
 #On 150.203.186.140 as proofusr
-#get source code from GitLab
+#get source code from GitHub
 cd /var/www/proof-assistant
 
 #Clone only master
-git clone -b master --single-branch git@gitlab.cecs.anu.edu.au:surajx/proof-assistant.git .
+git clone -b master --single-branch git@github.com:surajx/proof-assistant.git .
 
 #install production node modules.
 #WARN is okay
-npm install --production 
+npm install --production
 
 #install browser components.
 bower install
