@@ -149,14 +149,18 @@ function genNewProof(proofName){
   //Double validation: Ideally when code reaches here, its already validate
   //at the client side for WFS.
   if (FOLParser.isWFS(proofName).status){
+    //separate the logic sequence in two parts by ⊢
     var seqArr = proofName.trim().split("⊢");
     var proofLines = [];
     var proofGoal = "";
     var premises = [];
     //Indexing is okay since its WFS.
+    //situations where premises exist
     if (seqArr[0]!==''){
+      // separate each conditions by ,
       premises = seqArr[0].split(",");
       for (var i=0; i<premises.length; i++){
+        //automatially assume by the program to same some time
         var proofLine = genProofLine({
           depAssumptions : (i+1).toString(),
           lineNo         : (i+1).toString(),
@@ -164,6 +168,7 @@ function genNewProof(proofName){
           annotation     : "A",
           rule           : ""
         });
+        //if the proof line is correct, we store this line
         if (proofLine.status===true){
           proofLines.push(proofLine.proofLine);
         } else {
@@ -174,8 +179,11 @@ function genNewProof(proofName){
         }
       }
     }
+    // the second part is the final formula we need to derive in the end
     proofGoal = seqArr[1];
+    //create the new proof
     var proof = new Proof(premises, proofGoal);
+    //assign the assumption to the new proof
     proof.proofLines = proofLines;
     //unwanted validation: Ideally a new proof object contains only assumptions
     //or nothing at all. But still...
