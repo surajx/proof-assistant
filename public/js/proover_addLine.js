@@ -96,9 +96,9 @@ ns_proover.updateUIProofStatus = function(v_st){
     ns_proover.removeAllLabelModifiers();
     $( '#proofStatus' ).addClass("label-default");
   }
-  console.log(v_st);  
+  //console.log(v_st);
   proofModel.proofStatus = v_st;
-  console.log(proofModel.proofStatus);
+  //console.log(proofModel.proofStatus);
 }
 
 ns_proover.addNewLineListener = function(){

@@ -7,6 +7,9 @@ var AssumptionRule = require('./rules/AssumptionRule.js');
 var compareFormule = require('../../util/util.js').compareFormule;
 
 function Proof(premises, goal) {
+  // a proof is consist of the premises we have
+  //                       the ultimate goal we need to achieve
+  //                   and the natural deduction in between
   this.premises = premises;
   this.goal = goal;
   this.proofLines = [];
@@ -155,12 +158,12 @@ function genNewProof(proofName){
     var proofGoal = "";
     var premises = [];
     //Indexing is okay since its WFS.
-    //situations where premises exist
+    //situations where premises exist, sometimes we may have some tautology without any premises
     if (seqArr[0]!==''){
       // separate each conditions by ,
       premises = seqArr[0].split(",");
       for (var i=0; i<premises.length; i++){
-        //automatially assume by the program to same some time
+        //automatially assume by the program to save some time
         var proofLine = genProofLine({
           depAssumptions : (i+1).toString(),
           lineNo         : (i+1).toString(),
@@ -201,6 +204,24 @@ function genNewProof(proofName){
   }
 }
 
+function autoProof() {
+  //! FIXME: Add auto proof code here!!!!!!!!!!
+  // return [{
+  //   "depAssumptions":"7",
+  //   "formule": "qwerfasdf",
+  //   "annotation": "A",
+  //   "selectedRule": "A"
+  // },
+  // {
+  //   "depAssumptions":"8",
+  //   "formule": "qwerfasdf",
+  //   "annotation": "A",
+  //   "selectedRule": "A"
+  // }];
+  return [];
+}
+
 module.exports.validateProofAsync = validateProofAsync;
 module.exports.validateProof = validateProof;
 module.exports.genNewProofAsync = genNewProofAsync;
+module.exports.autoProof = autoProof;

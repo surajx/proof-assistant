@@ -189,3 +189,7 @@ a.list-group-item > span {
   background-color:#f5f5f5;
   border-color: #337ab7;
 }
+
+.proof-spacing {
+  margin-left: 10px;
+}

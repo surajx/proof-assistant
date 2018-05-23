@@ -7,6 +7,7 @@ $(document).ready(function(){
   console.log(proof);
 
   ns_proover.addSaveListener();
+  ns_proover.addProofListener();
   ns_proover.addMiscListeners();
   ns_proover.addNewLineListener();
   ns_proover.addEdtLineListner();

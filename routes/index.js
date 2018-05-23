@@ -6,6 +6,7 @@ var ProofModel = require('../models/Proof.js');
 
 var proofObjSanitize = require('../util/util.js').proofObjSanitize;
 var genNewProofAsync = require('../FOL/proof/Proof.js').genNewProofAsync;
+var autoProof = require('../FOL/proof/Proof.js').autoProof;
 var validateProofAsync = require('../FOL/proof/Proof.js').validateProofAsync;
 var genProofLine = require('../FOL/proof/ProofLine.js').genProofLine;
 
@@ -107,7 +108,7 @@ router.post('/register', function(req,res) {
           }
         });
       }
-    });    
+    });
   })
   .catch(function(errorCodes){
     req.flash("isSignupDirty", true);

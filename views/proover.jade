@@ -7,6 +7,7 @@ block append js
   script(type="text/javascript").
     var proofModel = !{JSON.stringify(proofModel)}
   script(src="/js/proover_save.js")
+  script(src="/js/proover_prove.js")
   script(src="/js/proover_util.js")
   script(src="/js/proover_addLine.js")
   script(src="/js/proover_editLine.js")
@@ -20,6 +21,7 @@ block content
     div.jumbotron
       h3.text-center: span.label.label-primary= proofModel.proofName
       button.btn.btn-lg.btn-success#saveProofBtn(type="button", data-loading-text="<i class='glyphicon glyphicon-hourglass' aria-hidden='true'></i>") Save
+      button.btn.btn-lg.btn-primary.proof-spacing#startProofBtn(type="button", data-loading-text="<i class='glyphicon glyphicon-hourglass' aria-hidden='true'></i>") Proof
       -var v_st = proofModel.proofStatus;
       if !v_st.isProofValid
         span.label.label-pill.label-danger.pull-right#proofStatus: h5#ps_h(style="color:white;") INVALID PROOF
